@@ -1,4 +1,4 @@
-import 'package:calculations/components/productCard.dart';
+import 'package:calculations/widgets/productCard.dart';
 import 'package:calculations/pages/forms/ProductForm.dart';
 import 'package:flutter/material.dart';
 

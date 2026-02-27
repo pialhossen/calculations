@@ -1,4 +1,4 @@
-import 'package:calculations/components/employeeCard.dart';
+import 'package:calculations/widgets/employeeCard.dart';
 import 'package:calculations/pages/forms/EmployeeForm.dart';
 import 'package:flutter/material.dart';
 

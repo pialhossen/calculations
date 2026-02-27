@@ -1,4 +1,4 @@
-import 'package:calculations/components/input.dart';
+import 'package:calculations/widgets/input.dart';
 import 'package:flutter/material.dart';
 
 class ProductForm extends StatelessWidget {

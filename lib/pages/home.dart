@@ -1,5 +1,5 @@
-import 'package:calculations/components/dropdown.dart';
-import 'package:calculations/components/slipCard.dart';
+import 'package:calculations/widgets/dropdown.dart';
+import 'package:calculations/widgets/slipCard.dart';
 import 'package:calculations/pages/forms/NewSlipForm.dart';
 import 'package:flutter/material.dart';
 
@@ -70,7 +70,7 @@ class Home extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => const NewSlipForm(),
+              builder: (BuildContext context) => NewSlipForm(),
             ),
           );
         },
