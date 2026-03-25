@@ -1,16 +1,48 @@
 import 'package:flutter/material.dart';
 
 class EmployeeCard extends StatelessWidget {
+  final int id;
   final String name;
   final String phoneNumber;
   const EmployeeCard({
     super.key,
+    required this.id,
     required this.name,
-    required this.phoneNumber
+    required this.phoneNumber,
   });
 
   @override
   Widget build(BuildContext context) {
+    void deleteEmployee() {
+      showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete Employee'),
+            content: const Text(
+              "Are you sure you want to delete this employee?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(), 
+                child: const Text('Cancel')
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // delete code goes here
+                },
+                child: const Text(
+                  "DELETE",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
@@ -21,7 +53,8 @@ class EmployeeCard extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch, // make children full height
+        crossAxisAlignment:
+            CrossAxisAlignment.stretch, // make children full height
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +69,11 @@ class EmployeeCard extends StatelessWidget {
                       width: 90,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(image: AssetImage("assets/images/profile-picture.png"))
+                        image: DecorationImage(
+                          image: AssetImage(
+                            "assets/images/profile-picture.png",
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 16),
@@ -48,15 +85,15 @@ class EmployeeCard extends StatelessWidget {
                           name,
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w900
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
-                        Text(phoneNumber)
+                        Text(phoneNumber),
                       ],
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           Column(
@@ -71,26 +108,17 @@ class EmployeeCard extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          print('click');
+                          print(id);
                         },
-                        child: Icon(
-                          Icons.edit,
-                          size: 32,
-                        ),
+                        child: Icon(Icons.edit, size: 32),
                       ),
                     ),
                     Container(
                       width: 40,
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () {
-                          print('click');
-                        },
-                        child: Icon(
-                          Icons.delete,
-                          size: 32,
-                          color: Colors.red,
-                        ),
+                        onTap: deleteEmployee,
+                        child: Icon(Icons.delete, size: 32, color: Colors.red),
                       ),
                     ),
                   ],

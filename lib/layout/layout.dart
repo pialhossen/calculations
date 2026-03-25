@@ -1,11 +1,11 @@
-import 'package:calculations/pages/employees.dart';
-import 'package:calculations/pages/home.dart';
-import 'package:calculations/pages/products.dart';
-import 'package:calculations/pages/setting.dart';
+import 'package:calculations/features/slips/presentation/pages/slips.dart';
+import 'package:calculations/features/employees/presentation/pages/employees.dart';
+import 'package:calculations/features/products/presentation/pages/products.dart';
+import 'package:calculations/features/settings/presentation/pages/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class Layout extends StatefulWidget {              // NEW        // NEW
+class Layout extends StatefulWidget {
   const Layout({
     super.key,
   });
@@ -17,7 +17,7 @@ class Layout extends StatefulWidget {              // NEW        // NEW
 class _LayoutState extends State<Layout> {
   int _currentIndex = 0;
   List<Widget> pages = [
-    Home(),
+    Slips(),
     Employees(),
     Products(),
     Setting(),
@@ -36,7 +36,7 @@ class _LayoutState extends State<Layout> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(18, 18, 18, 1),
         title: Text(
-          pageTitles[_currentIndex].toUpperCase(),           // use the passed title
+          pageTitles[_currentIndex].toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
@@ -50,9 +50,6 @@ class _LayoutState extends State<Layout> {
         child: pages[_currentIndex],
       ),
 
-      // -------------------------------
-      // ADD BOTTOM NAVIGATION BAR HERE
-      // -------------------------------
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: (index){

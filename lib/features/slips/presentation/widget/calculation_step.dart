@@ -1,5 +1,5 @@
-import 'package:calculations/widgets/calculator/calculation_input.dart';
-import 'package:calculations/widgets/select.dart';
+import 'package:calculations/features/slips/presentation/widget/calculation_input.dart';
+import 'package:calculations/core/widgets/select.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

@@ -1,9 +1,11 @@
-import 'package:calculations/pages/print/Slip.dart';
-import 'package:calculations/widgets/calculator/calculation_step.dart';
+import 'package:calculations/features/slips/presentation/pages/slip.dart';
+import 'package:calculations/features/slips/presentation/widget/calculation_step.dart';
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NewSlipForm extends StatefulWidget {
+  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const NewSlipForm());
+  
   const NewSlipForm({super.key});
 
   @override

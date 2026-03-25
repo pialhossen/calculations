@@ -2,7 +2,9 @@ import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Slip extends StatelessWidget {
+  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Slip());
   const Slip({super.key});
+  
 
   @override
   Widget build(BuildContext context) {

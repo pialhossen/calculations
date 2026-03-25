@@ -1,10 +1,10 @@
-import 'package:calculations/widgets/dropdown.dart';
-import 'package:calculations/widgets/slipCard.dart';
-import 'package:calculations/pages/forms/NewSlipForm.dart';
+import 'package:calculations/features/slips/presentation/widget/slipCard.dart';
+import 'package:calculations/features/slips/presentation/pages/new_slip_form.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Slips extends StatelessWidget {
+  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Slips());
+  const Slips({super.key});
 
   @override
   Widget build(BuildContext context) {

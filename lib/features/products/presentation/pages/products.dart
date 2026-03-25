@@ -1,8 +1,10 @@
-import 'package:calculations/widgets/productCard.dart';
-import 'package:calculations/pages/forms/ProductForm.dart';
+import 'package:calculations/features/products/presentation/widget/productCard.dart';
+import 'package:calculations/features/products/presentation/pages/product_form.dart';
 import 'package:flutter/material.dart';
 
 class Products extends StatelessWidget {
+  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Products());
+  
   const Products({super.key});
 
   @override
