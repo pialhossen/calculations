@@ -1,17 +1,38 @@
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 
-abstract class EmployeeState {}
+enum EmployeeActiveStatus {none, deleted, updated, created}
 
-class EmployeeInitial extends EmployeeState {}
-
-class EmployeeLoading extends EmployeeState {}
-
-class EmployeeSuccess extends EmployeeState {
+class EmployeeState {
   final List<Employee> employees;
-  EmployeeSuccess(this.employees);
-}
+  final Employee? selectedEmployee;
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isDeleteSuccess;
+  final EmployeeActiveStatus lastActive;
 
-class EmployeeError extends EmployeeState {
-  final String message;
-  EmployeeError(this.message);
+  EmployeeState({
+    this.employees = const [],
+    this.selectedEmployee,
+    this.isLoading = false,
+    this.errorMessage,
+    this.isDeleteSuccess = false,
+    this.lastActive = EmployeeActiveStatus.none,
+  });
+
+  // This is the secret sauce
+  EmployeeState copyWith({
+    List<Employee>? employees,
+    Employee? selectedEmployee,
+    bool? isLoading,
+    String? errorMessage,
+    bool? isDeleteSuccess,
+  }) {
+    return EmployeeState(
+      employees: employees ?? this.employees,
+      selectedEmployee: selectedEmployee ?? this.selectedEmployee,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      isDeleteSuccess: isDeleteSuccess ?? this.isDeleteSuccess,
+    );
+  }
 }

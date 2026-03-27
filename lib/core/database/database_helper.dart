@@ -24,6 +24,13 @@ class DatabaseHelper {
         name TEXT,
         number TEXT
       )
-    '''); // Removed the extra ', from inside here
+    ''');
+    await db.execute('''
+      CREATE TABLE product(
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        name TEXT,
+        perkg INTEGER
+      )
+    ''');
   }
 }

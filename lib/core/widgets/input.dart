@@ -27,6 +27,11 @@ class Input extends StatelessWidget {
           controller: controller,
           decoration: InputDecoration(
             hintText: placeholder,
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.red.shade400
+              )
+            ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: Colors.grey,

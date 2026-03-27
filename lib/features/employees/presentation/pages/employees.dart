@@ -5,11 +5,22 @@ import 'package:calculations/features/employees/presentation/pages/employee_form
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Employees extends StatelessWidget {
+class Employees extends StatefulWidget {
   static MaterialPageRoute route() =>
       MaterialPageRoute(builder: (context) => const Employees());
 
   const Employees({super.key});
+
+  @override
+  State<Employees> createState() => _EmployeesState();
+}
+
+class _EmployeesState extends State<Employees> {
+  @override
+  void initState() {
+    super.initState();
+    // context.read<EmployeeBloc>().add(LoadEmployeesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,37 +56,46 @@ class Employees extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: BlocBuilder<EmployeeBloc, EmployeeState>(
+            child: BlocConsumer<EmployeeBloc, EmployeeState>(
+              listenWhen: (prev, curr) =>
+                  curr.isDeleteSuccess && !prev.isDeleteSuccess,
+              listener: (context, state) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Delete Successful!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
               builder: (context, state) {
-                if (state is EmployeeError) {
-                  return Center(child: Text(state.message));
-                }
-                if (state is EmployeeLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is EmployeeSuccess) {
-                  if (state.employees.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        "No Employee Found",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: state.employees.length,
-                    padding: EdgeInsets.only(top: 20, bottom: 70),
-                    itemBuilder: (context, index) {
-                      final employee = state.employees[index];
-                        return EmployeeCard(
-                          id: employee.id!,
-                          name: employee.name,
-                          phoneNumber: employee.number,
-                        );
-                    },
+                if (state.errorMessage != null) {
+                  return Center(
+                    child: Text(
+                      state.errorMessage!,
+                      style: TextStyle(color: Colors.red),
+                    ),
                   );
                 }
-                return const Center(child: Text("Start adding employees!"));
+
+                if (state.isLoading && state.employees.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.employees.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "No Employee Found",
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  itemCount: state.employees.length,
+                  padding: EdgeInsets.only(top: 20, bottom: 70),
+                  itemBuilder: (context, index) {
+                    final employee = state.employees[index];
+                    return EmployeeCard(employee: employee);
+                  },
+                );
               },
             ),
           ),
@@ -86,7 +106,7 @@ class Employees extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => EmployeesForm(),
+              builder: (BuildContext context) => EmployeeForm(),
             ),
           );
         },

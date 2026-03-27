@@ -1,10 +1,10 @@
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/employees/domain/repository/employee_repository.dart';
 
-class CreateEmployeeUseCase {
+class UpdateEmployeeUseCase {
   final EmployeeRepository repository;
-  CreateEmployeeUseCase(this.repository);
-  Future<Employee> execute(String name, String number) {
-    return repository.createNewEmployee(name, number);
+  UpdateEmployeeUseCase(this.repository);
+  Future<Employee> execute(int id, String name, String number) {
+    return repository.updateEmployee(id ,name, number);
   }
 }

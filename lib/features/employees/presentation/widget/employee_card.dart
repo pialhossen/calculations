@@ -1,16 +1,22 @@
+import 'package:calculations/features/employees/domain/entities/employee.dart';
+import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
+import 'package:calculations/features/employees/presentation/bloc/employee_event.dart';
+import 'package:calculations/features/employees/presentation/pages/employee_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeCard extends StatelessWidget {
-  final int id;
-  final String name;
-  final String phoneNumber;
+class EmployeeCard extends StatefulWidget {
+  final Employee employee;
   const EmployeeCard({
     super.key,
-    required this.id,
-    required this.name,
-    required this.phoneNumber,
+    required this.employee,
   });
 
+  @override
+  State<EmployeeCard> createState() => _EmployeeCardState();
+}
+
+class _EmployeeCardState extends State<EmployeeCard> {
   @override
   Widget build(BuildContext context) {
     void deleteEmployee() {
@@ -29,8 +35,10 @@ class EmployeeCard extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+                  context.read<EmployeeBloc>().add(
+                    EmployeeDeleteEvent(widget.employee.id!)
+                  );
                   Navigator.of(context).pop();
-                  // delete code goes here
                 },
                 child: const Text(
                   "DELETE",
@@ -82,13 +90,13 @@ class EmployeeCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          name,
+                          widget.employee.name,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        Text(phoneNumber),
+                        Text(widget.employee.number),
                       ],
                     ),
                   ],
@@ -107,8 +115,8 @@ class EmployeeCard extends StatelessWidget {
                       width: 40,
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () {
-                          print(id);
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeForm(id: widget.employee.id)));
                         },
                         child: Icon(Icons.edit, size: 32),
                       ),

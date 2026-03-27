@@ -2,19 +2,9 @@ import 'package:calculations/features/employees/data/datasources/employee_local_
 import 'package:calculations/features/employees/data/model/employee_model.dart';
 
 abstract interface class EmployeeRepository {
-  Future<void> createNewEmployee(String name, String number);
+  Future<EmployeeModel> createNewEmployee(String name, String number);
+  Future<EmployeeModel> updateEmployee(int id,String name, String number);
+  Future<bool> deleteEmployee(int id);
+  Future<EmployeeModel> getEmployee(int id);
   Future<List<EmployeeModel>> getEmployees();
-}
-class EmployeeRepositoryImpl implements EmployeeRepository {
-  final EmployeeLocalDataSource employeeLocalDataSource = EmployeeLocalDataSourceImpl();
-  @override
-  Future<void> createNewEmployee(String name, String number) async {
-    final newEmployee = EmployeeModel(name: name, number: number);
-    employeeLocalDataSource.createEmployee(employee: newEmployee);
-  }
-  @override
-  Future<List<EmployeeModel>> getEmployees() async {
-    final maps = await employeeLocalDataSource.getEmployees();
-    return maps.map((map) => EmployeeModel.fromMap(map)).toList();
-  }
 }
