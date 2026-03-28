@@ -19,6 +19,4 @@ class EmployeeDeleteEvent extends EmployeeEvent {
   final int id;
   EmployeeDeleteEvent(this.id);
 }
-class LoadEmployeesEvent extends EmployeeEvent{
-  
-}
+class LoadEmployeesEvent extends EmployeeEvent{}

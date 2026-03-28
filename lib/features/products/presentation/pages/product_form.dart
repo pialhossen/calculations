@@ -65,6 +65,7 @@ class _ProductFormState extends State<ProductForm> {
                 controller: perKgController,
               ),
               GestureDetector(
+                onTap: ,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,

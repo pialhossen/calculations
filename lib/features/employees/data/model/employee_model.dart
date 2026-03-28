@@ -20,4 +20,15 @@ class EmployeeModel extends Employee {
       'number' : number,
     };
   }
+  EmployeeModel copyWith({
+    int? id,
+    String? name,
+    String? number,
+  }){
+    return EmployeeModel(
+      id: id ?? this.id,
+      name: name ?? this.name, 
+      number: number ?? this.number,
+    );
+  }
 }
