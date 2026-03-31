@@ -1,14 +1,43 @@
+import 'package:calculations/features/employees/domain/entities/employee.dart';
+import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_input.dart';
 import 'package:calculations/core/widgets/select.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class CalculationStep extends StatelessWidget {
+class CalculationStep extends StatefulWidget {
   final VoidCallback delete;
+  final List<Product> products;
   const CalculationStep({
     super.key,
+    required this.products,
     required this.delete
   });
+
+  @override
+  State<CalculationStep> createState() => _CalculationStepState();
+}
+
+class _CalculationStepState extends State<CalculationStep> {
+  String? initialValue;
+  Product? _selectedProduct; 
+  TextEditingController perKgController = TextEditingController(); 
+  TextEditingController kgController = TextEditingController();
+
+  void handleProductChange(Product? newProduct) {
+    if (newProduct == null) return;
+    setState(() {
+      _selectedProduct = newProduct;
+      perKgController.text = newProduct.perkg.toString();
+    });
+  }
+
+  @override
+  void initState() { 
+    super.initState();
+    initialValue = widget.products.first.name;
+    perKgController.text = widget.products.first.perkg.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,19 +46,19 @@ class CalculationStep extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Select(),
+            Select(products: widget.products, onChange: handleProductChange, initialValue: initialValue,),
             Container(
               padding: EdgeInsets.all(2),
               alignment: Alignment.center,
               child: Icon(Icons.arrow_forward, size: 20),
             ),
-            CalculationInput(),
+            CalculationInput(controller: perKgController),
             Container(
               padding: EdgeInsets.all(2),
               alignment: Alignment.center,
               child: Icon(Icons.close),
             ),
-            CalculationInput(),
+            CalculationInput(controller: kgController,),
             Container(
               padding: EdgeInsets.all(2),
               alignment: Alignment.center,
@@ -45,7 +74,7 @@ class CalculationStep extends StatelessWidget {
               child: Text('20345.7'),
             ),
             GestureDetector(
-              onTap: delete,
+              onTap: widget.delete,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,

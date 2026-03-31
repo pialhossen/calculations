@@ -1,5 +1,5 @@
 import 'package:calculations/features/slips/presentation/widget/slipCard.dart';
-import 'package:calculations/features/slips/presentation/pages/new_slip_form.dart';
+import 'package:calculations/features/slips/presentation/pages/slip_form.dart';
 import 'package:flutter/material.dart';
 
 class Slips extends StatelessWidget {
