@@ -3,7 +3,7 @@ import 'package:calculations/features/products/domain/repository/product_reposit
 
 class GetSingleProductModelUseCase {
   final ProductRepository repository;
-  GetSingleProductModelUseCase({required this.repository});
+  GetSingleProductModelUseCase(this.repository);
   Future<Product> execute(int id) async {
     return repository.getProduct(id);
   }

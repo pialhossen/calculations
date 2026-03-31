@@ -5,12 +5,14 @@ class Input extends StatelessWidget {
   final String placeholder;
   final TextEditingController controller;
   final bool hidden;
+  final TextInputType keyboardType;
   const Input({
     super.key,
     required this.label,
     required this.placeholder,
     required this.controller,
     this.hidden = false,
+    this.keyboardType = TextInputType.text,
   });
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class Input extends StatelessWidget {
         TextFormField(
           obscureText: hidden,
           controller: controller,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: placeholder,
             errorBorder: OutlineInputBorder(

@@ -7,10 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeeForm extends StatefulWidget {
   final int? id;
-  static MaterialPageRoute route(EmployeeBloc bloc) => MaterialPageRoute(
-    builder: (context) =>
-        BlocProvider.value(value: bloc, child: const EmployeeForm()),
-  );
+  static MaterialPageRoute route(EmployeeBloc bloc) => MaterialPageRoute(builder: (context) => BlocProvider.value(value: bloc, child: const EmployeeForm()),);
 
   const EmployeeForm({super.key, this.id});
 

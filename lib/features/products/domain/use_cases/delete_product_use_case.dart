@@ -2,7 +2,7 @@ import 'package:calculations/features/products/domain/repository/product_reposit
 
 class DeleteProductUseCase {
   final ProductRepository repository;
-  DeleteProductUseCase({required this.repository});
+  DeleteProductUseCase(this.repository);
   Future<void> execute(int id) {
     return repository.deleteProduct(id);
   }

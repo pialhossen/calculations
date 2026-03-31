@@ -3,7 +3,7 @@ import 'package:calculations/features/products/domain/repository/product_reposit
 
 class UpdateProductUseCase {
   final ProductRepository repository;
-  UpdateProductUseCase({required this.repository});
+  UpdateProductUseCase(this.repository);
   Future<Product> execute(int id, String name, int perkg) {
     return repository.updateProduct(id ,name, perkg);
   }

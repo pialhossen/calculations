@@ -60,12 +60,21 @@ class _EmployeesState extends State<Employees> {
               listenWhen: (prev, curr) =>
                   curr.isDeleteSuccess && !prev.isDeleteSuccess,
               listener: (context, state) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Delete Successful!'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                if(state.isDeleteSuccess){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Delete Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }else if(state.isEditSuccess){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Edit Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
               },
               builder: (context, state) {
                 if (state.errorMessage != null) {

@@ -8,6 +8,7 @@ class ProductState {
   final bool isLoading;
   final String? errorMessage;
   final bool isDeleteSuccess;
+  final bool isEditSuccess;
   final ProductActiveStatus lastActive;
 
   ProductState({
@@ -16,6 +17,7 @@ class ProductState {
     this.isLoading = false,
     this.errorMessage,
     this.isDeleteSuccess = false,
+    this.isEditSuccess = false,
     this.lastActive = ProductActiveStatus.none,
   });
   ProductState copyWith({

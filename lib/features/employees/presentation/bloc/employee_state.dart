@@ -8,6 +8,7 @@ class EmployeeState {
   final bool isLoading;
   final String? errorMessage;
   final bool isDeleteSuccess;
+  final bool isEditSuccess;
   final EmployeeActiveStatus lastActive;
 
   EmployeeState({
@@ -16,6 +17,7 @@ class EmployeeState {
     this.isLoading = false,
     this.errorMessage,
     this.isDeleteSuccess = false,
+    this.isEditSuccess = false,
     this.lastActive = EmployeeActiveStatus.none,
   });
 

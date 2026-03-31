@@ -1,16 +1,50 @@
+import 'package:calculations/features/products/domain/entities/product.dart';
+import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
+import 'package:calculations/features/products/presentation/bloc/product_event.dart';
+import 'package:calculations/features/products/presentation/pages/product_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Productcard extends StatelessWidget {
-  final String name;
-  final String phoneNumber;
+  final Product product;
   const Productcard({
     super.key,
-    required this.name,
-    required this.phoneNumber
+    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
+    void deleteProduct() {
+      showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete Product'),
+            content: const Text(
+              "Are you sure you want to delete this product?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(), 
+                child: const Text('Cancel')
+              ),
+              TextButton(
+                onPressed: () {
+                  context.read<ProductBloc>().add(
+                    ProductDeleteEvent(product.id!)
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "DELETE",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
@@ -45,13 +79,13 @@ class Productcard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          name,
+                          product.name,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w900
                           ),
                         ),
-                        Text(phoneNumber)
+                        Text("${product.perkg.toString()} Tk KG")
                       ],
                     )
                   ],
@@ -71,7 +105,7 @@ class Productcard extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          print('click');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductForm(id: product.id)));
                         },
                         child: Icon(
                           Icons.edit,
@@ -83,9 +117,7 @@ class Productcard extends StatelessWidget {
                       width: 40,
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () {
-                          print('click');
-                        },
+                        onTap: deleteProduct,
                         child: Icon(
                           Icons.delete,
                           size: 32,

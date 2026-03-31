@@ -1,10 +1,14 @@
-import 'package:calculations/features/products/presentation/widget/productCard.dart';
+import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
+import 'package:calculations/features/products/presentation/bloc/product_state.dart';
+import 'package:calculations/features/products/presentation/widget/product_card.dart';
 import 'package:calculations/features/products/presentation/pages/product_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Products extends StatelessWidget {
-  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Products());
-  
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => const Products());
+
   const Products({super.key});
 
   @override
@@ -18,7 +22,7 @@ class Products extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(30)
+              borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -41,15 +45,57 @@ class Products extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(top: 20, bottom: 70),
-              children: [
-                Productcard(name: "plastic", phoneNumber: "32 tk per kg",),
-                Productcard(name: "Iron", phoneNumber: "32 tk per kg",),
-                Productcard(name: "Silver", phoneNumber: "32 tk per kg",),
-              ],
+            child: BlocConsumer<ProductBloc, ProductState>(
+              listenWhen: (previous, current) => current.isDeleteSuccess && !previous.isDeleteSuccess,
+              listener: (context, state) {
+                if(state.isDeleteSuccess){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Delete Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }else if(state.isEditSuccess){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Edit Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state.errorMessage != null) {
+                  return Center(
+                    child: Text(
+                      state.errorMessage!,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  );
+                }
+
+                if (state.isLoading && state.products.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.products.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "No Products Found",
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  itemCount: state.products.length,
+                  padding: EdgeInsets.only(top: 20, bottom: 70),
+                  itemBuilder: (context, index) {
+                    final product = state.products[index];
+                    return Productcard(product: product);
+                  },
+                );
+              },
             ),
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -58,7 +104,7 @@ class Products extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => const ProductForm(),
-            )
+            ),
           );
         },
         backgroundColor: Color(0xFF5B58FF),
