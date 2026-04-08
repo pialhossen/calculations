@@ -1,15 +1,7 @@
-import 'package:calculations/features/employees/domain/entities/employee.dart';
-import 'package:calculations/features/employees/domain/repository/employee_repository.dart';
-import 'package:calculations/features/employees/domain/repository/employee_repository_impl.dart';
-import 'package:calculations/features/employees/domain/use_cases/get_single_employee_model_use_case.dart';
-import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
-import 'package:calculations/features/employees/presentation/bloc/employee_event.dart';
-import 'package:calculations/features/employees/presentation/bloc/employee_state.dart';
 import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
 import 'package:calculations/features/products/presentation/bloc/product_state.dart';
-import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
 import 'package:calculations/features/slips/domain/entities/step_entity.dart';
 import 'package:calculations/features/slips/presentation/pages/slip.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_step.dart';

@@ -1,7 +1,7 @@
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_input.dart';
-import 'package:calculations/core/widgets/select.dart';
+import 'package:calculations/core/widgets/product_select.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -46,7 +46,7 @@ class _CalculationStepState extends State<CalculationStep> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Select(products: widget.products, onChange: handleProductChange, initialValue: initialValue,),
+            ProductSelect(products: widget.products, onChange: handleProductChange, initialValue: initialValue,),
             Container(
               padding: EdgeInsets.all(2),
               alignment: Alignment.center,

@@ -1,12 +1,12 @@
 import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:flutter/material.dart';
 
-class Select extends StatefulWidget {
+class ProductSelect extends StatefulWidget {
   final List<Product> products;
   final void Function(Product) onChange;
   final String? initialValue; // Pass the starting ID here
 
-  const Select({
+  const ProductSelect({
     super.key,
     required this.products,
     required this.onChange,
@@ -14,10 +14,10 @@ class Select extends StatefulWidget {
   });
 
   @override
-  State<Select> createState() => _SelectState();
+  State<ProductSelect> createState() => _ProductSelectState();
 }
 
-class _SelectState extends State<Select> {
+class _ProductSelectState extends State<ProductSelect> {
   String? _internalValue;
 
   @override
