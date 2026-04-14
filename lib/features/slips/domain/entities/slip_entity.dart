@@ -1,18 +1,21 @@
+// slip_entity.dart
 import 'package:calculations/features/employees/domain/entities/employee.dart';
-import 'package:calculations/features/slips/domain/entities/step_entity.dart';
+// 1. Change this import to the correct filename
+import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart'; 
 
 class SlipEntity {
-  int? id;
+  final int? id;
   final Employee employee;
   final DateTime dateTime;
-  double total;
-  List<StepEntity> steps;
+  final double total;
+  // 2. Change StepEntity to SlipItemEntity
+  final List<SlipItemEntity> steps; 
 
   SlipEntity({
     this.id,
-    List<StepEntity>? steps,
     required this.employee,
     required this.dateTime,
-    this.total = 0,
-  }) : steps = steps ?? [];
+    required this.total,
+    required this.steps,
+  });
 }

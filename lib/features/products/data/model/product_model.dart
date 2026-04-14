@@ -1,4 +1,3 @@
-import 'package:calculations/features/employees/data/model/employee_model.dart';
 import 'package:calculations/features/products/domain/entities/product.dart';
 
 class ProductModel extends Product{

@@ -32,5 +32,28 @@ class DatabaseHelper {
         perkg INTEGER
       )
     ''');
+    await db.execute('''
+      CREATE TABLE slips(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        employee_id INTEGER,
+        total_amount REAL,
+        date_created TEXT,
+        note TEXT,
+        FOREIGN KEY (employee_id) REFERENCES employee (id)
+      )
+    ''');
+    await db.execute(
+      '''
+      CREATE TABLE slip_items(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slip_id INTEGER,
+        product_name TEXT,
+        kg REAL,
+        per_kg REAL,
+        row_total REAL,
+        FOREIGN KEY (slip_id) REFERENCES slips (id) ON DELETE CASCADE
+      )
+      '''
+    );
   }
 }

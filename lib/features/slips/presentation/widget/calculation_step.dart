@@ -7,11 +7,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CalculationStep extends StatefulWidget {
   final VoidCallback delete;
+  double rowTotal;
+  final Function(double) onTotalChanged;
   final List<Product> products;
-  const CalculationStep({
+  CalculationStep({
     super.key,
+    this.rowTotal = 0.0,
     required this.products,
-    required this.delete
+    required this.delete,
+    required this.onTotalChanged,
   });
 
   @override
@@ -23,6 +27,7 @@ class _CalculationStepState extends State<CalculationStep> {
   Product? _selectedProduct; 
   TextEditingController perKgController = TextEditingController(); 
   TextEditingController kgController = TextEditingController();
+  String _totalPrice = "0.00";
 
   void handleProductChange(Product? newProduct) {
     if (newProduct == null) return;
@@ -31,12 +36,24 @@ class _CalculationStepState extends State<CalculationStep> {
       perKgController.text = newProduct.perkg.toString();
     });
   }
+  void _calculatePrice() {
+    final double perKg = double.tryParse(perKgController.text) ?? 0;
+    final double kg = double.tryParse(kgController.text) ?? 0;
+
+    setState(() {
+      final total = perKg * kg;
+      _totalPrice = (total).toStringAsFixed(2);
+      widget.onTotalChanged(total);
+    });
+  }
 
   @override
   void initState() { 
     super.initState();
     initialValue = widget.products.first.name;
     perKgController.text = widget.products.first.perkg.toString();
+    perKgController.addListener(_calculatePrice);
+    kgController.addListener(_calculatePrice);
   }
 
   @override
@@ -71,7 +88,7 @@ class _CalculationStepState extends State<CalculationStep> {
               ),
               padding: EdgeInsets.all(10),
               alignment: Alignment.center,
-              child: Text('20345.7'),
+              child: Text(_totalPrice),
             ),
             GestureDetector(
               onTap: widget.delete,

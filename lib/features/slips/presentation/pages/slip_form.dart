@@ -2,7 +2,7 @@ import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
 import 'package:calculations/features/products/presentation/bloc/product_state.dart';
-import 'package:calculations/features/slips/domain/entities/step_entity.dart';
+import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart';
 import 'package:calculations/features/slips/presentation/pages/slip.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_step.dart';
 import "package:flutter/material.dart";
@@ -20,10 +20,13 @@ class NewSlipForm extends StatefulWidget {
 }
 
 class _NewSlipFormState extends State<NewSlipForm> {
-  List<StepEntity> steps = [];
+  List<SlipItemEntity> steps = [];
   List<Product>? products;
 
   void deleteStep() {}
+  double get grandTotal {
+    return steps.fold(0, (sum, item) => sum + item.rowTotal);
+  }
 
   @override
   void initState() {
@@ -113,16 +116,34 @@ class _NewSlipFormState extends State<NewSlipForm> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children: [
-                        ...steps.map(
-                          (e) => CalculationStep(products: products??[] ,delete: deleteStep),
-                        ),
+                        ...steps.asMap().entries.map((entry) {
+                          int idx = entry.key;
+                          return CalculationStep(
+                            products: products ?? [],
+                            delete: () {
+                              setState(() {
+                                steps.removeAt(idx);
+                              });
+                            },
+                            onTotalChanged: (value) {
+                              setState(() {
+                                steps[idx].rowTotal = value;
+                              });
+                            },
+                          );
+                        }),
                       ],
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        steps = [...steps, StepEntity()];
+                        steps = [...steps, SlipItemEntity(
+                          productName: '', 
+                          kg: 0, 
+                          perKg: 0, 
+                          rowTotal: 0,
+                        )];
                       });
                     },
                     child: Row(
@@ -160,7 +181,7 @@ class _NewSlipFormState extends State<NewSlipForm> {
                         // height: 30,
                         padding: EdgeInsets.all(10),
                         child: Text(
-                          "Total = 5505",
+                          "Total = ${grandTotal.toStringAsFixed(2)}",
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
