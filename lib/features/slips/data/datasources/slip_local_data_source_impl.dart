@@ -1,8 +1,8 @@
 import 'package:calculations/core/database/database_helper.dart'; // Adjust path
-import 'package:calculations/features/slips/data/datasources/slips_local_data_source.dart';
+import 'package:calculations/features/slips/data/datasources/slip_local_data_source.dart';
 import 'package:calculations/features/slips/data/model/slip_model.dart';
 
-class SlipsLocalDataSourceImpl implements SlipsLocalDataSource {
+class SlipLocalDataSourceImpl implements SlipLocalDataSource {
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
   @override
@@ -14,13 +14,13 @@ class SlipsLocalDataSourceImpl implements SlipsLocalDataSource {
       int slipId = await txn.insert('slips', slip.toMap());
 
       // 2. Insert each calculation step linked to this slipId
-      for (var step in slip.steps) {
+      for (var slipItem in slip.slipItems) {
         await txn.insert('slip_items', {
           'slip_id': slipId,
-          'product_name': step.productName,
-          'kg': step.kg,
-          'per_kg': step.perKg,
-          'row_total': step.rowTotal,
+          'product_name': slipItem.productName,
+          'kg': slipItem.kg,
+          'per_kg': slipItem.perKg,
+          'row_total': slipItem.rowTotal,
         });
       }
       return slipId;
@@ -103,7 +103,7 @@ class SlipsLocalDataSourceImpl implements SlipsLocalDataSource {
 
       // 2. Simplest way to update items: Delete old ones and insert new ones
       await txn.delete('slip_items', where: 'slip_id = ?', whereArgs: [slip.id]);
-      for (var step in slip.steps) {
+      for (var step in slip.slipItems) {
         await txn.insert('slip_items', {
           'slip_id': slip.id,
           'product_name': step.productName,

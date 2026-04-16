@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:calculations/features/employees/domain/repository/employee_repository.dart';
 import 'package:calculations/features/employees/domain/repository/employee_repository_impl.dart';
 import 'package:calculations/features/employees/domain/use_cases/create_employee_use_case.dart';
 import 'package:calculations/features/employees/domain/use_cases/delete_employee_use_case.dart';
@@ -17,6 +16,13 @@ import 'package:calculations/features/products/domain/use_cases/get_single_produ
 import 'package:calculations/features/products/domain/use_cases/update_product_use_case.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
+import 'package:calculations/features/slips/domain/repository/slip_repository_impl.dart';
+import 'package:calculations/features/slips/domain/use_cases/create_slip_use_case.dart';
+import 'package:calculations/features/slips/domain/use_cases/delete_slip_use_case.dart';
+import 'package:calculations/features/slips/domain/use_cases/get_all_slip_use_case.dart';
+import 'package:calculations/features/slips/domain/use_cases/get_single_slip_model_use_case.dart';
+import 'package:calculations/features/slips/domain/use_cases/update_slip_use_case.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
 import 'package:calculations/layout/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +49,13 @@ void main() {
   final getSingleProductModelUseCase = GetSingleProductModelUseCase(productRepository);
   final updateProductUseCase = UpdateProductUseCase(productRepository);
 
+  final slipRepository = SlipRepositoryImpl();
+  final createSlipUseCase = CreateSlipUseCase(slipRepository);
+  final getAllSlipUseCase = GetAllSlipUseCase(slipRepository);
+  final deleteSlipUseCase = DeleteSlipUseCase(slipRepository);
+  final getSingleSlipModelUseCase = GetSingleSlipModelUseCase(slipRepository);
+  final updateSlipUseCase = UpdateSlipUseCase(slipRepository);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -64,6 +77,15 @@ void main() {
             getSingleProductModelUseCase: getSingleProductModelUseCase
           )..add(LoadProductsEvent())
         ),
+        BlocProvider(
+          create: (context) => SlipBloc(
+            createSlipUseCase: createSlipUseCase, 
+            updateSlipUseCase: updateSlipUseCase, 
+            getAllSlipUseCase: getAllSlipUseCase, 
+            deleteSlipUseCase: deleteSlipUseCase, 
+            getSingleSlipModelUseCase: getSingleSlipModelUseCase
+          )
+        )
       ],
       child: const MyApp(),
     ),

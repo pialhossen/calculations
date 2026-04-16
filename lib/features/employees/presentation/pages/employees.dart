@@ -19,7 +19,6 @@ class _EmployeesState extends State<Employees> {
   @override
   void initState() {
     super.initState();
-    // context.read<EmployeeBloc>().add(LoadEmployeesEvent());
   }
 
   @override

@@ -5,17 +5,18 @@ import 'package:calculations/features/slips/domain/entities/slip_item_entity.dar
 
 class SlipEntity {
   final int? id;
+  final String? note;
   final Employee employee;
   final DateTime dateTime;
   final double total;
-  // 2. Change StepEntity to SlipItemEntity
-  final List<SlipItemEntity> steps; 
+  final List<SlipItemEntity> slipItems; 
 
   SlipEntity({
     this.id,
+    this.note,
     required this.employee,
     required this.dateTime,
     required this.total,
-    required this.steps,
+    required this.slipItems,
   });
 }

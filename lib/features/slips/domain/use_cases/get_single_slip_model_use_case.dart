@@ -1,10 +1,10 @@
-import 'package:calculations/features/products/domain/entities/product.dart';
-import 'package:calculations/features/products/domain/repository/product_repository.dart';
+import 'package:calculations/features/slips/data/model/slip_model.dart';
+import 'package:calculations/features/slips/domain/repository/slip_repository.dart';
 
 class GetSingleSlipModelUseCase {
-  final ProductRepository repository;
+  final SlipRepository repository;
   GetSingleSlipModelUseCase(this.repository);
-  Future<Product> execute(int id) async {
+  Future<SlipModel> execute(int id) async {
     return repository.getSlip(id);
   }
 }

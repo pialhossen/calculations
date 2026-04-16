@@ -2,7 +2,10 @@ import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
 import 'package:calculations/features/products/presentation/bloc/product_state.dart';
+import 'package:calculations/features/slips/data/model/slip_item_model.dart';
 import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_event.dart';
 import 'package:calculations/features/slips/presentation/pages/slip.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_step.dart';
 import "package:flutter/material.dart";
@@ -20,13 +23,13 @@ class NewSlipForm extends StatefulWidget {
 }
 
 class _NewSlipFormState extends State<NewSlipForm> {
-  List<SlipItemEntity> steps = [];
+  List<SlipItemModel> steps = [];
   List<Product>? products;
 
-  void deleteStep() {}
   double get grandTotal {
     return steps.fold(0, (sum, item) => sum + item.rowTotal);
   }
+
 
   @override
   void initState() {
@@ -36,6 +39,12 @@ class _NewSlipFormState extends State<NewSlipForm> {
 
   @override
   Widget build(BuildContext context) {
+    void createNewSlip(){
+      Navigator.pop(context);
+      context.read<SlipBloc>().add(
+        SlipCreateEvent(employeeId: 1, slipItems: steps, totalAmount: grandTotal, note: ""),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(18, 18, 18, 1),
@@ -93,7 +102,7 @@ class _NewSlipFormState extends State<NewSlipForm> {
                             ],
                           ),
                         ),
-
+      
                         // RIGHT SIDE — white box with icon
                         Container(
                           padding: EdgeInsets.all(10),
@@ -119,15 +128,21 @@ class _NewSlipFormState extends State<NewSlipForm> {
                         ...steps.asMap().entries.map((entry) {
                           int idx = entry.key;
                           return CalculationStep(
+                            key: ValueKey(steps[idx]),
                             products: products ?? [],
                             delete: () {
                               setState(() {
                                 steps.removeAt(idx);
                               });
                             },
-                            onTotalChanged: (value) {
+                            onProductChange: (Product product){
+                              steps[idx].productName = product.name;
+                            },
+                            onCalculationChanged: ({ required double total, required double perKg, required double kg }) {
                               setState(() {
-                                steps[idx].rowTotal = value;
+                                steps[idx].rowTotal = total;
+                                steps[idx].kg = kg;
+                                steps[idx].perKg = perKg;
                               });
                             },
                           );
@@ -138,7 +153,7 @@ class _NewSlipFormState extends State<NewSlipForm> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        steps = [...steps, SlipItemEntity(
+                        steps = [...steps, SlipItemModel(
                           productName: '', 
                           kg: 0, 
                           perKg: 0, 
@@ -157,11 +172,9 @@ class _NewSlipFormState extends State<NewSlipForm> {
                           ),
                           width: 50,
                           height: 50,
-                          child: GestureDetector(
-                            child: Icon(
-                              FontAwesomeIcons.plus,
-                              color: Colors.white,
-                            ),
+                          child: Icon(
+                            FontAwesomeIcons.plus,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -221,6 +234,7 @@ class _NewSlipFormState extends State<NewSlipForm> {
                   children: [
                     Expanded(
                       child: GestureDetector(
+                        onTap: createNewSlip,
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(

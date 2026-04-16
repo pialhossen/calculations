@@ -1,6 +1,6 @@
 import 'package:calculations/features/slips/data/model/slip_model.dart';
 
-abstract interface class SlipsLocalDataSource {
+abstract interface class SlipLocalDataSource {
   Future<int> createSlip(SlipModel slip);
   Future<int> updateSlip(SlipModel slip);
   Future<bool> deleteSlip(int id);

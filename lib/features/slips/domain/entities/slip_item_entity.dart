@@ -1,8 +1,8 @@
 class SlipItemEntity {
   final int? id;
-  final String productName;
-  final double kg;
-  final double perKg;
+  String productName;
+  double kg;
+  double perKg;
   double rowTotal; // Remove 'final' here
 
   SlipItemEntity({

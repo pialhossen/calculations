@@ -1,4 +1,3 @@
-import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_input.dart';
 import 'package:calculations/core/widgets/product_select.dart';
@@ -8,14 +7,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class CalculationStep extends StatefulWidget {
   final VoidCallback delete;
   double rowTotal;
-  final Function(double) onTotalChanged;
+  final Function({required double total, required double perKg, required double kg}) onCalculationChanged;
+  final Function(Product) onProductChange;
   final List<Product> products;
   CalculationStep({
     super.key,
     this.rowTotal = 0.0,
     required this.products,
     required this.delete,
-    required this.onTotalChanged,
+    required this.onCalculationChanged,
+    required this.onProductChange,
   });
 
   @override
@@ -35,6 +36,7 @@ class _CalculationStepState extends State<CalculationStep> {
       _selectedProduct = newProduct;
       perKgController.text = newProduct.perkg.toString();
     });
+    widget.onProductChange(newProduct);
   }
   void _calculatePrice() {
     final double perKg = double.tryParse(perKgController.text) ?? 0;
@@ -43,7 +45,7 @@ class _CalculationStepState extends State<CalculationStep> {
     setState(() {
       final total = perKg * kg;
       _totalPrice = (total).toStringAsFixed(2);
-      widget.onTotalChanged(total);
+      widget.onCalculationChanged(kg: kg, perKg: perKg, total: total);
     });
   }
 
