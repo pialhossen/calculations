@@ -1,9 +1,12 @@
+import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Slip extends StatelessWidget {
-  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Slip());
-  const Slip({super.key});
+  static MaterialPageRoute route(SlipEntity slip) => MaterialPageRoute(builder: (context) => const Slip());
+  const Slip({
+    super.key,
+  });
   
 
   @override

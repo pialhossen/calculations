@@ -43,7 +43,7 @@ class SlipModel extends SlipEntity {
     Employee? employee,
     DateTime? dateTime,
     double? total,
-    List<SlipItemEntity>? slipItems,
+    List<SlipItemModel>? slipItems,
   }){
     return SlipModel(
       id: id ?? this.id,

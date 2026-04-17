@@ -1,10 +1,51 @@
+import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_event.dart';
+import 'package:calculations/features/slips/presentation/pages/slip_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class SlipCard extends StatelessWidget {
-  const SlipCard({super.key});
+  final SlipEntity slipEntity;
+  const SlipCard({
+    super.key,
+    required this.slipEntity,
+  });
 
   @override
   Widget build(BuildContext context) {
+    void deleteSlip() {
+      showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete Product'),
+            content: const Text(
+              "Are you sure you want to delete this Slip?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(), 
+                child: const Text('Cancel')
+              ),
+              TextButton(
+                onPressed: () {
+                  context.read<SlipBloc>().add(
+                    SlipDeleteEvent(slipEntity.id!)
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "DELETE",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
@@ -23,14 +64,14 @@ class SlipCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "25/06/25",
+                DateFormat('dd/MM/yy').format(slipEntity.dateTime),
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
               ),
               Container(
                 height: 30, // fixed height, or use double.infinity to fill
                 width: 100,
                 alignment: Alignment.centerLeft,
-                child: Text('Sumon'),
+                child: Text(slipEntity.employee.name),
               ),
             ],
           ),
@@ -39,11 +80,7 @@ class SlipCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '#wrw6gsif',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400)
-              ),
-              Text(
-                "860 TK",
+                "${slipEntity.total} TK",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
               Row(
@@ -53,8 +90,8 @@ class SlipCard extends StatelessWidget {
                     width: 40,
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () {
-                        print('click');
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SlipForm(id: slipEntity.id)));
                       },
                       child: Icon(
                         Icons.edit,
@@ -66,9 +103,7 @@ class SlipCard extends StatelessWidget {
                     width: 40,
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () {
-                        print('click');
-                      },
+                      onTap: deleteSlip,
                       child: Icon(
                         Icons.delete,
                         size: 32,

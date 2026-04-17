@@ -1,8 +1,9 @@
+import 'package:calculations/features/slips/data/model/slip_model.dart';
 import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
 
 class SlipState {
-  final List<SlipEntity> slips;
-  final SlipEntity? selectedSlip;
+  final List<SlipModel> slips;
+  final SlipModel? selectedSlip;
   final bool isLoading;
   final String? errorMessage;
   final bool isDeleteSuccess;
@@ -17,8 +18,8 @@ class SlipState {
     this.isEditSuccess = false,
   });
   SlipState copyWith({
-    List<SlipEntity>? slips,
-    SlipEntity? selectedSlip,
+    List<SlipModel>? slips,
+    SlipModel? selectedSlip,
     bool? isLoading,
     String? errorMessage,
     bool? isDeleteSuccess,

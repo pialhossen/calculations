@@ -1,7 +1,8 @@
 // slip_entity.dart
 import 'package:calculations/features/employees/domain/entities/employee.dart';
+import 'package:calculations/features/slips/data/model/slip_item_model.dart';
+import 'package:calculations/features/slips/data/model/slip_model.dart';
 // 1. Change this import to the correct filename
-import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart'; 
 
 class SlipEntity {
   final int? id;
@@ -9,7 +10,7 @@ class SlipEntity {
   final Employee employee;
   final DateTime dateTime;
   final double total;
-  final List<SlipItemEntity> slipItems; 
+  final List<SlipItemModel> slipItems; 
 
   SlipEntity({
     this.id,

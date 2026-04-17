@@ -1,9 +1,13 @@
+import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_state.dart';
 import 'package:calculations/features/slips/presentation/widget/slipCard.dart';
 import 'package:calculations/features/slips/presentation/pages/slip_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Slips extends StatelessWidget {
-  static MaterialPageRoute route() => MaterialPageRoute(builder: (context) => const Slips());
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => const Slips());
   const Slips({super.key});
 
   @override
@@ -48,21 +52,53 @@ class Slips extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 100),
-              children: const [
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-                SlipCard(),
-              ],
+            child: BlocConsumer<SlipBloc, SlipState>(
+              listenWhen: (prev, curr) =>
+                  curr.isDeleteSuccess && !prev.isDeleteSuccess,
+              listener: (context, state) {
+                if (state.isDeleteSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Delete Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else if (state.isEditSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Edit Successful!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state.slips.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "No Slips Found",
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  itemCount: state.slips.length,
+                  padding: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 16,
+                    bottom: 100,
+                  ),
+                  itemBuilder: (context, index) {
+                    final slip = state.slips[index];
+                    return SlipCard(
+                      slipEntity: slip,
+                    );
+                  },
+                );
+              },
             ),
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -70,7 +106,7 @@ class Slips extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => NewSlipForm(),
+              builder: (BuildContext context) => SlipForm(),
             ),
           );
         },

@@ -23,6 +23,7 @@ import 'package:calculations/features/slips/domain/use_cases/get_all_slip_use_ca
 import 'package:calculations/features/slips/domain/use_cases/get_single_slip_model_use_case.dart';
 import 'package:calculations/features/slips/domain/use_cases/update_slip_use_case.dart';
 import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
+import 'package:calculations/features/slips/presentation/bloc/slip_event.dart';
 import 'package:calculations/layout/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,7 +85,7 @@ void main() {
             getAllSlipUseCase: getAllSlipUseCase, 
             deleteSlipUseCase: deleteSlipUseCase, 
             getSingleSlipModelUseCase: getSingleSlipModelUseCase
-          )
+          )..add(LoadSlipEvent())
         )
       ],
       child: const MyApp(),
