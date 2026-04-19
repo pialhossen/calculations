@@ -27,6 +27,8 @@ class SlipModel extends SlipEntity {
     Map<String, dynamic> map,
     List<Map<String, dynamic>> itemMaps,
   ) {
+    print("From The Slip Model");
+    print(map);
     return SlipModel(
       id: map['id'],
       dateTime: DateTime.parse(map['date_created']),

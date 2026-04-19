@@ -32,7 +32,7 @@ class _SlipFormState extends State<SlipForm> {
   List<SlipItemModel> steps = [];
   List<Product>? products;
   List<Employee>? employees;
-  Employee? selectedEmployee; 
+  Employee? selectedEmployee;
   TextEditingController noteController = TextEditingController();
 
   double get grandTotal {
@@ -115,13 +115,16 @@ class _SlipFormState extends State<SlipForm> {
         child: BlocListener<EmployeeBloc, EmployeeState>(
           listener: (context, state) {
             if (state.employees.isNotEmpty) {
-                setState(() {
-                  employees = state.employees;
-                  if (widget.id == null && selectedEmployee == null) {
-                    selectedEmployee = state.employees.first;
-                  }
-                });
-              }
+              setState(() {
+                employees = state.employees;
+
+                // If we are CREATING (id == null) and haven't picked anyone yet
+                if (widget.id == null && selectedEmployee == null) {
+                  selectedEmployee = state.employees.first;
+                }
+                // If we are UPDATING, we usually wait for SlipBloc to provide the employee
+              });
+            }
           },
           child: BlocListener<ProductBloc, ProductState>(
             listener: (context, state) {
@@ -134,15 +137,14 @@ class _SlipFormState extends State<SlipForm> {
             child: BlocConsumer<SlipBloc, SlipState>(
               listenWhen: (previous, current) =>
                   previous.selectedSlip != current.selectedSlip,
+              // Inside BlocConsumer<SlipBloc, SlipState> listener
               listener: (context, state) {
-                if (state.selectedSlip != null) {
-                  steps = state.selectedSlip!.slipItems;
-                  noteController.text = state.selectedSlip?.note ?? '';
-                  selectedEmployee = state.selectedSlip!.employee;
-                } else if (state.errorMessage != null) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+                if (state.selectedSlip != null && steps.isEmpty) {
+                  setState(() {
+                    steps = state.selectedSlip!.slipItems;
+                    noteController.text = state.selectedSlip?.note ?? '';
+                    selectedEmployee = state.selectedSlip!.employee;
+                  });
                 }
               },
               builder: (context, state) {
@@ -184,14 +186,32 @@ class _SlipFormState extends State<SlipForm> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(DateFormat('dd/MM/yy').format(widget.id != null? state.selectedSlip!.dateTime: DateTime.now())),
+                                    Text(
+                                      DateFormat('dd/MM/yy').format(
+                                        widget.id != null
+                                            ? state.selectedSlip!.dateTime
+                                            : DateTime.now(),
+                                      ),
+                                    ),
                                     SizedBox(height: 4),
-                                    Text(DateFormat('hh:mm a').format(widget.id != null? state.selectedSlip!.dateTime: DateTime.now())),
+                                    Text(
+                                      DateFormat('hh:mm a').format(
+                                        widget.id != null
+                                            ? state.selectedSlip!.dateTime
+                                            : DateTime.now(),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-          
-                              EmployeeSelect(employees: employees!, onChange: handleEmployeeChange, initialValue: selectedEmployee?.id?.toString() ?? employees!.first.id.toString(),)
+
+                              EmployeeSelect(
+                                employees: employees!,
+                                onChange: handleEmployeeChange,
+                                initialValue:
+                                    selectedEmployee?.id?.toString() ??
+                                    employees!.first.id.toString(),
+                              ),
                             ],
                           ),
                         ),
@@ -348,7 +368,9 @@ class _SlipFormState extends State<SlipForm> {
                                       total: grandTotal.floor().toString(),
                                       steps: steps,
                                       employee: selectedEmployee!,
-                                      dateTime: widget.id != null? state.selectedSlip!.dateTime :DateTime.now(),
+                                      dateTime: widget.id != null
+                                          ? state.selectedSlip!.dateTime
+                                          : DateTime.now(),
                                     ),
                                   ),
                                 );

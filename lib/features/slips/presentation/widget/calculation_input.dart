@@ -10,11 +10,14 @@ class CalculationInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 50,
+      width: 40,
       height: 40,
       child: ClipRRect(
         borderRadius: BorderRadiusGeometry.circular(10),
         child: TextField(
+          keyboardType: TextInputType.numberWithOptions(
+            decimal: true,
+          ),
           controller: controller,
           decoration: InputDecoration(
             filled: true,

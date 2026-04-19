@@ -71,21 +71,21 @@ class _CalculationStepState extends State<CalculationStep> {
           children: [
             ProductSelect(products: widget.products, onChange: handleProductChange, initialValue: initialValue,),
             Container(
-              padding: EdgeInsets.all(2),
+              // padding: EdgeInsets.all(2),
               alignment: Alignment.center,
-              child: Icon(Icons.arrow_forward, size: 20),
+              child: Icon(Icons.arrow_forward, size: 16),
             ),
             CalculationInput(controller: perKgController),
             Container(
-              padding: EdgeInsets.all(2),
+              // padding: EdgeInsets.all(2),
               alignment: Alignment.center,
               child: Icon(Icons.close),
             ),
             CalculationInput(controller: kgController,),
             Container(
-              padding: EdgeInsets.all(2),
+              // padding: EdgeInsets.all(2),
               alignment: Alignment.center,
-              child: Icon(FontAwesomeIcons.equals, size: 18),
+              child: Icon(FontAwesomeIcons.equals, size: 16),
             ),
             Container(
               decoration: BoxDecoration(
@@ -103,7 +103,7 @@ class _CalculationStepState extends State<CalculationStep> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(8),
                 alignment: Alignment.center,
                 child: Icon(Icons.delete, color: Colors.red),
               ),

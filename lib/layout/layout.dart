@@ -46,7 +46,7 @@ class _LayoutState extends State<Layout> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: pages[_currentIndex],
       ),
 

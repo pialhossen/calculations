@@ -49,8 +49,8 @@ class SlipCard extends StatelessWidget {
     }
     return Container(
       margin: EdgeInsets.only(bottom: 20),
-      padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-      height: 110,
+      padding: EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 10),
+      height: 90,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -66,7 +66,7 @@ class SlipCard extends StatelessWidget {
             children: [
               Text(
                 slipEntity.employee.name,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
               ),
               Container(
                 height: 30, // fixed height, or use double.infinity to fill
@@ -94,7 +94,7 @@ class SlipCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 40,
+                    width: 20,
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: (){
@@ -110,12 +110,13 @@ class SlipCard extends StatelessWidget {
                       },
                       child: Icon(
                         Icons.remove_red_eye_rounded,
-                        size: 32,
+                        size: 23,
                       ),
                     ),
                   ),
+                  SizedBox(width: 8),
                   Container(
-                    width: 40,
+                    width: 20,
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: (){
@@ -123,18 +124,19 @@ class SlipCard extends StatelessWidget {
                       },
                       child: Icon(
                         Icons.edit,
-                        size: 32,
+                        size: 23,
                       ),
                     ),
                   ),
+                  SizedBox(width: 8),
                   Container(
-                    width: 40,
+                    width: 20,
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: deleteSlip,
                       child: Icon(
                         Icons.delete,
-                        size: 32,
+                        size: 23,
                         color: Colors.red,
                       ),
                     ),

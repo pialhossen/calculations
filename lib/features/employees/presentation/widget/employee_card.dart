@@ -52,9 +52,9 @@ class _EmployeeCardState extends State<EmployeeCard> {
     }
 
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-      height: 110,
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(top: 5, bottom: 5, right: 15, left: 10),
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -73,8 +73,8 @@ class _EmployeeCardState extends State<EmployeeCard> {
                 child: Row(
                   children: [
                     Container(
-                      height: 90,
-                      width: 90,
+                      height: 70,
+                      width: 70,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
@@ -84,7 +84,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +92,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                         Text(
                           widget.employee.name,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -118,7 +118,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeForm(id: widget.employee.id)));
                         },
-                        child: Icon(Icons.edit, size: 32),
+                        child: Icon(Icons.edit, size: 25),
                       ),
                     ),
                     Container(
@@ -126,7 +126,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: deleteEmployee,
-                        child: Icon(Icons.delete, size: 32, color: Colors.red),
+                        child: Icon(Icons.delete, size: 25, color: Colors.red),
                       ),
                     ),
                   ],

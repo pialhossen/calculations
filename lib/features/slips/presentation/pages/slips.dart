@@ -54,17 +54,17 @@ class _SlipsState extends State<Slips> {
           return Column(
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
-                height: 120,
+                padding: const EdgeInsets.all(10),
+                // height: 80,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // LEFT SIDE — Synced with Bloc State
                     Container(
-                      padding: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class _SlipsState extends State<Slips> {
                             DateFormat('dd/MM/yy').format(state.selectedDate),
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 4),
+                          // const SizedBox(height: 4),
                           Text(
                             DateFormat('hh:mm a').format(state.selectedDate),
                             style: TextStyle(color: Colors.grey[600]),
@@ -87,12 +87,12 @@ class _SlipsState extends State<Slips> {
                     GestureDetector(
                       onTap: () => _selectDate(context, state.selectedDate),
                       child: Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.calendar_month, size: 28),
+                        child: const Icon(Icons.calendar_month, size: 20),
                       ),
                     ),
                   ],
@@ -111,9 +111,9 @@ class _SlipsState extends State<Slips> {
                     : ListView.builder(
                         itemCount: state.slips.length,
                         padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 16,
+                          left: 10,
+                          right: 10,
+                          top: 10,
                           bottom: 100,
                         ),
                         itemBuilder: (context, index) {

@@ -21,7 +21,6 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
 
   @override
   Future<List<SlipModel>> getSlips(DateTime? datetime) async {
-    print(datetime);
     final db = await dbHelper.database;
 
     String whereClause = '';
@@ -65,26 +64,34 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
   Future<SlipModel> getSlip(int id) async {
     final db = await dbHelper.database;
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      'slips',
-      where: 'id = ?',
-      whereArgs: [id],
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
+    SELECT 
+      s.*, 
+      e.name AS employee_name, 
+      e.number AS employee_number
+    FROM slips s
+    INNER JOIN employee e ON s.employee_id = e.id
+    WHERE s.id = ?
+    ''',
+      [id],
     );
 
     if (maps.isNotEmpty) {
       final List<Map<String, dynamic>> itemMaps = await db.rawQuery(
         '''
-        SELECT 
-          si.*, 
-          p.name as product_name, 
-          p.perkg as product_perkg
-        FROM slip_items si
-        INNER JOIN product p ON si.product_id = p.id
-        WHERE si.slip_id = ?
+      SELECT 
+        si.*, 
+        p.name as product_name, 
+        p.perkg as product_perkg
+      FROM slip_items si
+      INNER JOIN product p ON si.product_id = p.id
+      WHERE si.slip_id = ?
       ''',
         [id],
       );
-      // Assuming you have an Employee lookup logic here
+
+      // Now maps.first contains 'employee_name' and 'employee_number'
       SlipModel slipModel = SlipModel.fromMap(maps.first, itemMaps);
       return slipModel;
     } else {

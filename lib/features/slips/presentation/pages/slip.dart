@@ -93,28 +93,28 @@ class Slip extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 alignment: Alignment.center,
-                                child: Row(children: [Text(steps[idx].product.name)]),
+                                child: Row(children: [Text(steps[idx].product.name.length > 8? '${steps[idx].product.name.substring(0, 8)}...' :steps[idx].product.name)]),
                               ),
                               Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
-                                child: Icon(Icons.arrow_forward, size: 16),
+                                child: Icon(Icons.arrow_forward, size: 14),
                               ),
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
                                 child: Text(steps[idx].perKg.floor().toString()),
                               ),
                               Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
                                 child: Icon(Icons.close, size: 15),
                               ),
@@ -122,12 +122,12 @@ class Slip extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
                                 child: Text(steps[idx].kg.toString()),
                               ),
                               Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
                                 child: Icon(FontAwesomeIcons.equals, size: 13),
                               ),
@@ -135,7 +135,7 @@ class Slip extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(5),
                                 alignment: Alignment.center,
                                 child: Text(steps[idx].rowTotal.floor().toString()),
                               ),

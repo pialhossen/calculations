@@ -35,7 +35,7 @@ class _ProductSelectState extends State<ProductSelect> {
     if (widget.products.isEmpty) return const Text("...");
 
     return Container(
-      width: 70,
+      width: 60,
       height: 30,
       child: DropdownButton<String>(
         value: _internalValue, // 2. Use the INTERNAL state variable
@@ -44,7 +44,7 @@ class _ProductSelectState extends State<ProductSelect> {
         items: widget.products.map((Product product) {
           return DropdownMenuItem<String>(
             value: product.id.toString(),
-            child: Text(product.name),
+            child: Text(product.name, style: TextStyle(fontSize: 13),),
           );
         }).toList(),
         onChanged: (newValue) {

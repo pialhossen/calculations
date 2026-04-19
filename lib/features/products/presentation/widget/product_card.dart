@@ -46,9 +46,9 @@ class Productcard extends StatelessWidget {
       );
     }
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-      height: 110,
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(top: 5, bottom: 5, right: 15, left: 10),
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -66,14 +66,14 @@ class Productcard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      height: 90,
-                      width: 90,
+                      height: 70,
+                      width: 70,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(image: AssetImage("assets/images/products.png"))
                       ),
                     ),
-                    SizedBox(width: 16),
+                    SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -81,7 +81,7 @@ class Productcard extends StatelessWidget {
                         Text(
                           product.name,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.w900
                           ),
                         ),
@@ -109,7 +109,7 @@ class Productcard extends StatelessWidget {
                         },
                         child: Icon(
                           Icons.edit,
-                          size: 32,
+                          size: 25,
                         ),
                       ),
                     ),
@@ -120,7 +120,7 @@ class Productcard extends StatelessWidget {
                         onTap: deleteProduct,
                         child: Icon(
                           Icons.delete,
-                          size: 32,
+                          size: 25,
                           color: Colors.red,
                         ),
                       ),

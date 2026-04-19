@@ -47,12 +47,12 @@ class _ProductsState extends State<Products> {
             children: [
               // Search Bar
               Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 height: 55,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
@@ -129,7 +129,7 @@ class _ProductsState extends State<Products> {
 
     return ListView.builder(
       itemCount: state.products.length,
-      padding: const EdgeInsets.only(top: 10, bottom: 80, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 5, bottom: 40, left: 8, right: 8),
       itemBuilder: (context, index) {
         final product = state.products[index];
         // Ensure the widget name matches your project (Productcard or ProductCard)
