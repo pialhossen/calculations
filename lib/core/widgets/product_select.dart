@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ProductSelect extends StatefulWidget {
   final List<Product> products;
   final void Function(Product) onChange;
-  final String? initialValue; // Pass the starting ID here
+  final String? initialValue;
 
   const ProductSelect({
     super.key,
@@ -23,19 +23,16 @@ class _ProductSelectState extends State<ProductSelect> {
   @override
   void initState() {
     super.initState();
-    // Set the initial selection once when the widget is born
-    _internalValue = widget.initialValue;
+    if(widget.initialValue == null){
+      _internalValue = widget.products.first.id.toString();
+    } else {
+      _internalValue = widget.initialValue;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (widget.products.isEmpty) return const Text("...");
-
-    // 1. Safety check: make sure the value actually exists in the list
-    bool exists = widget.products.any((p) => p.id.toString() == _internalValue);
-    if (!exists) {
-      _internalValue = widget.products.first.id.toString();
-    }
 
     return Container(
       width: 70,

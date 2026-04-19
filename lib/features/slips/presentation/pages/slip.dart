@@ -1,13 +1,23 @@
-import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
+import 'package:calculations/features/employees/domain/entities/employee.dart';
+import 'package:calculations/features/slips/data/model/slip_item_model.dart';
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class Slip extends StatelessWidget {
-  static MaterialPageRoute route(SlipEntity slip) => MaterialPageRoute(builder: (context) => const Slip());
+  final List<SlipItemModel> steps;
+  final String note;
+  final String total;
+  final Employee employee;
+  final DateTime dateTime;
   const Slip({
     super.key,
+    required this.note,
+    required this.total,
+    required this.steps,
+    required this.employee,
+    required this.dateTime,
   });
-  
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +34,7 @@ class Slip extends StatelessWidget {
         title: Transform.translate(
           offset: Offset(-10, 0),
           child: Text(
-            "10/11/25 Rofik", // use the passed title
+            "${DateFormat('dd/MM/yy').format(dateTime)} ${employee.name}", // use the passed title
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -51,10 +61,10 @@ class Slip extends StatelessWidget {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("10/11/25"),
+                        children: [
+                          Text(DateFormat('dd/MM/yy').format(dateTime)),
                           SizedBox(height: 4),
-                          Text("10:15 AM"),
+                          Text(DateFormat('hh:mm a').format(dateTime)),
                         ],
                       ),
                     ),
@@ -65,7 +75,7 @@ class Slip extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text('Rofik'),
+                      child: Text(employee.name),
                     ),
                   ],
                 ),
@@ -75,111 +85,66 @@ class Slip extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                    ...steps.asMap().entries.map((entry) {
+                      int idx = entry.key;
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(children: [Text(steps[idx].product.name)]),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Icon(Icons.arrow_forward, size: 16),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Text(steps[idx].perKg.floor().toString()),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Icon(Icons.close, size: 15),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Text(steps[idx].kg.toString()),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Icon(FontAwesomeIcons.equals, size: 13),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                child: Text(steps[idx].rowTotal.floor().toString()),
+                              ),
+                            ],
                           ),
-                          alignment: Alignment.center,
-                          child: Row(children: [Text('Iron')]),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(Icons.arrow_forward, size: 16),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('2.7'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(Icons.close, size: 15),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('2.7'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(FontAwesomeIcons.equals, size: 13),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('20.7'),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          alignment: Alignment.center,
-                          child: Row(children: [Text('Iron')]),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(Icons.arrow_forward, size: 16),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('2.7'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(Icons.close, size: 15),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('2.7'),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Icon(FontAwesomeIcons.equals, size: 13),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text('20.7'),
-                        ),
-                      ],
-                    ),
+                          SizedBox(height: 10),
+                        ],
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -203,7 +168,7 @@ class Slip extends StatelessWidget {
                     // height: 30,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      "Total = 550",
+                      "Total = $total",
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
@@ -217,7 +182,7 @@ class Slip extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 width: MediaQuery.of(context).size.width,
                 height: 120,
-                child: Text("Any Notes"),
+                child: Text(note),
               ),
             ],
           ),

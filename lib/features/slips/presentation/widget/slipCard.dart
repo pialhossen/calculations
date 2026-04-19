@@ -1,6 +1,7 @@
 import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
 import 'package:calculations/features/slips/presentation/bloc/slip_bloc.dart';
 import 'package:calculations/features/slips/presentation/bloc/slip_event.dart';
+import 'package:calculations/features/slips/presentation/pages/slip.dart';
 import 'package:calculations/features/slips/presentation/pages/slip_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,14 +65,20 @@ class SlipCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                DateFormat('dd/MM/yy').format(slipEntity.dateTime),
+                slipEntity.employee.name,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
               ),
               Container(
                 height: 30, // fixed height, or use double.infinity to fill
-                width: 100,
+                width: 200,
                 alignment: Alignment.centerLeft,
-                child: Text(slipEntity.employee.name),
+                child: Text(
+                  "${DateFormat('dd/MM/yy').format(slipEntity.dateTime)} - ${
+                    (slipEntity.note != null && slipEntity.note!.length > 15) 
+                      ? '${slipEntity.note!.substring(0, 15)}...' 
+                      : (slipEntity.note ?? '')
+                  }"
+                ),
               ),
             ],
           ),
@@ -80,12 +87,33 @@ class SlipCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${slipEntity.total} TK",
+                "${slipEntity.total.floor()} TK",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    width: 40,
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => Slip(
+                            note: slipEntity.note != null? slipEntity.note!: "",
+                            total: slipEntity.total.floor().toString(),
+                            steps: slipEntity.slipItems,
+                            employee: slipEntity.employee,
+                            dateTime: slipEntity.dateTime,
+                          )
+                        ));
+                      },
+                      child: Icon(
+                        Icons.remove_red_eye_rounded,
+                        size: 32,
+                      ),
+                    ),
+                  ),
                   Container(
                     width: 40,
                     alignment: Alignment.centerRight,

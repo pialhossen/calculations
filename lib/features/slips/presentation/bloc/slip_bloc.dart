@@ -22,7 +22,6 @@ class SlipBloc extends Bloc<SlipEvent, SlipState> {
   }): super(SlipState()){
     on<SlipCreateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
         final newSlip = await createSlipUseCase.execute(
           employeeId: event.employeeId,
           slipItems: event.slipItems,
@@ -30,13 +29,9 @@ class SlipBloc extends Bloc<SlipEvent, SlipState> {
           note: event.note,
         );
         emit(state.copyWith(isLoading: false, slips: [newSlip, ...state.slips]));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
     });
     on<SlipUpdateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
         final updatedSlip = await updateSlipUseCase.execute(
           id: event.id, 
           employeeId: event.employeeId, 
@@ -46,37 +41,22 @@ class SlipBloc extends Bloc<SlipEvent, SlipState> {
         );
         final updateSlipList = state.slips.map((slip) => slip.id == event.id? updatedSlip: slip).toList();
         emit(state.copyWith(isLoading: false, slips: updateSlipList));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
     });
     on<LoadSlipEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
         final slips = await getAllSlipUseCase.execute();
         emit(state.copyWith(isLoading: false, slips: slips));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
     });
     on<SlipDeleteEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
         await deleteSlipUseCase.execute(event.id);
         final slips = await getAllSlipUseCase.execute();
         emit(state.copyWith(isLoading: false, slips: slips));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
     });
     on<LoadSingleSlipEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true, selectedSlip: null));
-      try {
         final slip = await getSingleSlipModelUseCase.execute(event.id);
         emit(state.copyWith(isLoading: false, selectedSlip: slip));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
     });
   }
   

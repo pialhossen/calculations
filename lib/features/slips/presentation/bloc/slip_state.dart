@@ -1,5 +1,4 @@
 import 'package:calculations/features/slips/data/model/slip_model.dart';
-import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
 
 class SlipState {
   final List<SlipModel> slips;

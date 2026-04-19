@@ -1,15 +1,16 @@
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/slips/data/model/slip_item_model.dart';
 import 'package:calculations/features/slips/domain/entities/slip_entity.dart';
-import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart';
 
 class SlipModel extends SlipEntity {
   SlipModel({
     super.id,
+    super.note,
     required super.employee,
     required super.total,
     required super.slipItems,
     required super.dateTime,
+
   });
 
   Map<String, dynamic> toMap() {
@@ -18,6 +19,7 @@ class SlipModel extends SlipEntity {
       'employee_id': employee.id,
       'date_created': dateTime.toIso8601String(),
       'total_amount': total,
+      'note': note,
     };
   }
 
@@ -36,6 +38,7 @@ class SlipModel extends SlipEntity {
       ),
       // CONVERT MAPS TO OBJECTS HERE:
       slipItems: itemMaps.map((item) => SlipItemModel.fromMap(item)).toList(),
+      note: map['note']
     );
   }
   SlipModel copyWith({
@@ -44,6 +47,7 @@ class SlipModel extends SlipEntity {
     DateTime? dateTime,
     double? total,
     List<SlipItemModel>? slipItems,
+    String? note,
   }){
     return SlipModel(
       id: id ?? this.id,
@@ -51,6 +55,7 @@ class SlipModel extends SlipEntity {
       employee: employee ?? this.employee,
       total: total ?? this.total,
       slipItems: slipItems ?? this.slipItems,
+      note: note ?? this.note,
     );
   }
 }

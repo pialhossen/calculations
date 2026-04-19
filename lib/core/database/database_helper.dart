@@ -47,11 +47,12 @@ class DatabaseHelper {
       CREATE TABLE slip_items(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         slip_id INTEGER,
-        product_name TEXT,
+        product_id INTEGER,
         kg REAL,
         per_kg REAL,
         row_total REAL,
-        FOREIGN KEY (slip_id) REFERENCES slips (id) ON DELETE CASCADE
+        FOREIGN KEY (slip_id) REFERENCES slips (id) ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE
       )
       '''
     );

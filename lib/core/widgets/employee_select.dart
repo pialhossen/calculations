@@ -1,14 +1,14 @@
-import 'package:calculations/features/products/domain/entities/product.dart';
+import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeSelect extends StatefulWidget {
-  final List<Product> products;
-  final void Function(Product) onChange;
+  final List<Employee> employees;
+  final void Function(Employee) onChange;
   final String? initialValue; // Pass the starting ID here
 
   const EmployeeSelect({
     super.key,
-    required this.products,
+    required this.employees,
     required this.onChange,
     this.initialValue,
   });
@@ -29,12 +29,12 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.products.isEmpty) return const Text("...");
+    if (widget.employees.isEmpty) return const Text("...");
 
     // 1. Safety check: make sure the value actually exists in the list
-    bool exists = widget.products.any((p) => p.id.toString() == _internalValue);
+    bool exists = widget.employees.any((p) => p.id.toString() == _internalValue);
     if (!exists) {
-      _internalValue = widget.products.first.id.toString();
+      _internalValue = widget.employees.first.id.toString();
     }
 
     return Container(
@@ -44,10 +44,10 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
         value: _internalValue, // 2. Use the INTERNAL state variable
         isExpanded: true,
         underline: const SizedBox(),
-        items: widget.products.map((Product product) {
+        items: widget.employees.map((Employee employee) {
           return DropdownMenuItem<String>(
-            value: product.id.toString(),
-            child: Text(product.name),
+            value: employee.id.toString(),
+            child: Text(employee.name),
           );
         }).toList(),
         onChanged: (newValue) {
@@ -55,10 +55,10 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
           setState(() {
             _internalValue = newValue;
           });
-          final selectedProduct = widget.products.firstWhere(
+          final selectedEmployee = widget.employees.firstWhere(
             (p) => p.id.toString() == newValue,
           );
-          widget.onChange(selectedProduct); 
+          widget.onChange(selectedEmployee); 
         },
       ),
     );

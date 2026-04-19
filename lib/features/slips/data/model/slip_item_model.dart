@@ -1,10 +1,11 @@
+import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart';
 
 class SlipItemModel extends SlipItemEntity {
   // Use the super constructor to pass data to the Entity
   SlipItemModel({
     super.id,
-    required super.productName,
+    required super.product,
     required super.kg,
     required super.perKg,
     required super.rowTotal,
@@ -14,7 +15,7 @@ class SlipItemModel extends SlipItemEntity {
   Map<String, dynamic> toMap(int slipId) {
     return {
       'slip_id': slipId, 
-      'product_name': productName,
+      'product_id': product!.id,
       'kg': kg,
       'per_kg': perKg,
       'row_total': rowTotal,
@@ -25,7 +26,11 @@ class SlipItemModel extends SlipItemEntity {
   factory SlipItemModel.fromMap(Map<String, dynamic> map) {
     return SlipItemModel(
       id: map['id'],
-      productName: map['product_name'] ?? '',
+      product: Product(
+        id: map['product_id'],
+        name: map['product_name'],
+        perkg: map['product_perkg'],
+      ),
       kg: (map['kg'] as num).toDouble(),
       perKg: (map['per_kg'] as num).toDouble(),
       rowTotal: (map['row_total'] as num).toDouble(),

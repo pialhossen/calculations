@@ -9,19 +9,12 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
   Future<int> createSlip(SlipModel slip) async {
     final db = await dbHelper.database;
 
-    return await db.transaction((txn) async {
-      // 1. Insert the main slip (Header)
-      int slipId = await txn.insert('slips', slip.toMap());
+    print(slip.toMap());
 
-      // 2. Insert each calculation step linked to this slipId
+    return await db.transaction((txn) async {
+      int slipId = await txn.insert('slips', slip.toMap());
       for (var slipItem in slip.slipItems) {
-        await txn.insert('slip_items', {
-          'slip_id': slipId,
-          'product_name': slipItem.productName,
-          'kg': slipItem.kg,
-          'per_kg': slipItem.perKg,
-          'row_total': slipItem.rowTotal,
-        });
+        await txn.insert('slip_items', slipItem.toMap(slipId));
       }
       return slipId;
     });
@@ -35,22 +28,41 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT slips.*, employee.name as employee_name, employee.number as employee_number
       FROM slips
-      INNER JOIN employee ON slips.employee_id = employee.id
+      LEFT JOIN employee ON slips.employee_id = employee.id
+      ORDER BY slips.id DESC
     ''');
 
     List<SlipModel> slips = [];
 
     for (var map in maps) {
-      // For each slip, we must fetch its specific items
+      // For each slip, fetch its specific items
       final List<Map<String, dynamic>> itemMaps = await db.query(
         'slip_items',
         where: 'slip_id = ?',
         whereArgs: [map['id']],
       );
 
-      // Reconstruct steps and employee to create the SlipModel
-      // Note: You'll need to implement mapping logic for these sub-entities
-      slips.add(SlipModel.fromMap(map, itemMaps)); 
+      // For each slip item, fetch the product details
+      List<Map<String, dynamic>> itemMapsWithProduct = [];
+      for (var item in itemMaps) {
+        final List<Map<String, dynamic>> productMaps = await db.query(
+          'product',
+          where: 'id = ?',
+          whereArgs: [item['product_id']],
+        );
+        if (productMaps.isNotEmpty) {
+          final product = productMaps.first;
+          itemMapsWithProduct.add({
+            ...item,
+            'product_id': product['id'],
+            'product_name': product['name'],
+            'product_perkg': product['perkg'],
+          });
+        } else {
+          itemMapsWithProduct.add(item);
+        }
+      }
+      slips.add(SlipModel.fromMap(map, itemMapsWithProduct));
     }
 
     return slips;
@@ -59,6 +71,7 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
   @override
   Future<SlipModel> getSlip(int id) async {
     final db = await dbHelper.database;
+    
 
     final List<Map<String, dynamic>> maps = await db.query(
       'slips',
@@ -66,10 +79,21 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
       whereArgs: [id],
     );
 
+
     if (maps.isNotEmpty) {
-      final itemMaps = await db.query('slip_items', where: 'slip_id = ?', whereArgs: [id]);
+      
+      final List<Map<String, dynamic>> itemMaps = await db.rawQuery('''
+        SELECT 
+          si.*, 
+          p.name as product_name, 
+          p.perkg as product_perkg
+        FROM slip_items si
+        INNER JOIN product p ON si.product_id = p.id
+        WHERE si.slip_id = ?
+      ''', [id]);
       // Assuming you have an Employee lookup logic here
-      return SlipModel.fromMap(maps.first, itemMaps);
+      SlipModel slipModel = SlipModel.fromMap(maps.first, itemMaps);
+      return slipModel;
     } else {
       throw Exception("Slip not found");
     }
@@ -106,7 +130,7 @@ class SlipLocalDataSourceImpl implements SlipLocalDataSource {
       for (var step in slip.slipItems) {
         await txn.insert('slip_items', {
           'slip_id': slip.id,
-          'product_name': step.productName,
+          'product_id': step.product!.id,
           'kg': step.kg,
           'per_kg': step.perKg,
           'row_total': step.rowTotal,

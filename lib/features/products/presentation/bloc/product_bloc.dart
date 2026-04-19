@@ -22,50 +22,50 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   }) : super(ProductState()){
     on<ProductCreateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
+      // try {
         final newProduct = await createProductUseCase.execute(event.name, event.perkg);
         emit(state.copyWith(isLoading: false, products: [newProduct, ...state.products]));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
+      // } catch (e) {
+      //   emit(state.copyWith(errorMessage: e.toString()));
+      // }
     });
     on<ProductUpdateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
+      // try {
         final updatedProduct = await updateProductUseCase.execute(event.id, event.name, event.perkg);
         final updateProductList = state.products.map((product) => product.id == event.id? updatedProduct: product).toList();
         emit(state.copyWith(isLoading: false, products: updateProductList));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
+      // } catch (e) {
+      //   emit(state.copyWith(errorMessage: e.toString()));
+      // }
     });
     on<SingleProductEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true, selectedProduct: null));
-      try {
+      // try {
         final product = await getSingleProductModelUseCase.execute(event.id);
         emit(state.copyWith(isLoading: false, selectedProduct: product));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
+      // } catch (e) {
+      //   emit(state.copyWith(errorMessage: e.toString()));
+      // }
     });
     on<ProductDeleteEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
+      // try {
         await deleteProductUseCase.execute(event.id);
         final products = await getAllProductUseCase.execute();
         emit(state.copyWith(isLoading: false, products: products));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
+      // } catch (e) {
+      //   emit(state.copyWith(errorMessage: e.toString()));
+      // }
     });
     on<LoadProductsEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      try {
+      // try {
         final products = await getAllProductUseCase.execute();
         emit(state.copyWith(isLoading: false, products: products));
-      } catch (e) {
-        emit(state.copyWith(errorMessage: e.toString()));
-      }
+      // } catch (e) {
+      //   emit(state.copyWith(errorMessage: e.toString()));
+      // }
     });
   }
 }

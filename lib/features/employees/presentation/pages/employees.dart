@@ -42,7 +42,6 @@ class _EmployeesState extends State<Employees> {
                 Expanded(
                   child: TextField(
                     onChanged: (value) {
-                      print("User Typed: $value");
                     },
                     decoration: InputDecoration(
                       hintText: "Search here",

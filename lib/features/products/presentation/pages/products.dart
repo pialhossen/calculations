@@ -32,7 +32,6 @@ class Products extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     onChanged: (value) {
-                      print("User Typed: $value");
                     },
                     decoration: InputDecoration(
                       hintText: "Search here",

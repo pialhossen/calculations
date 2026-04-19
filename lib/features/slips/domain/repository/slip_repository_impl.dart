@@ -23,6 +23,7 @@ class SlipRepositoryImpl implements SlipRepository {
       employee: employee,
       slipItems: slipItems,
       total: totalAmount,
+      note: note
     );
     final id = await slipLocalDataSource.createSlip(newslip);
     return newslip.copyWith(id: id);
@@ -60,6 +61,7 @@ class SlipRepositoryImpl implements SlipRepository {
       dateTime: slip.dateTime, // Fallback logic
       slipItems: slipItems,
       total: totalAmount,
+      note: note,
     );
 
     await slipLocalDataSource.updateSlip(

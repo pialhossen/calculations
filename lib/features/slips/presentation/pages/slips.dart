@@ -4,11 +4,33 @@ import 'package:calculations/features/slips/presentation/widget/slipCard.dart';
 import 'package:calculations/features/slips/presentation/pages/slip_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
-class Slips extends StatelessWidget {
+class Slips extends StatefulWidget {
   static MaterialPageRoute route() =>
       MaterialPageRoute(builder: (context) => const Slips());
   const Slips({super.key});
+
+  @override
+  State<Slips> createState() => _SlipsState();
+}
+
+class _SlipsState extends State<Slips> {
+  DateTime selectedDate = DateTime.now();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), // The earliest date allowed
+      lastDate: DateTime(2101), // The latest date allowed
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,36 +39,48 @@ class Slips extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             height: 120,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // LEFT SIDE — white box with date & time
+                // LEFT SIDE — Now dynamic
                 Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("10/11/25"),
-                      SizedBox(height: 4),
-                      Text("10:15 AM"),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Formats to 19/04/26
+                      Text(
+                        DateFormat('dd/MM/yy').format(selectedDate),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      // Formats to 09:03 AM
+                      Text(
+                        DateFormat('hh:mm a').format(DateTime.now()),
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ],
                   ),
                 ),
 
-                // RIGHT SIDE — white box with icon
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                // RIGHT SIDE — Calendar Trigger
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.calendar_month, size: 28),
                   ),
-                  child: const Icon(Icons.calendar_month, size: 28),
                 ),
               ],
             ),
@@ -91,9 +125,7 @@ class Slips extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     final slip = state.slips[index];
-                    return SlipCard(
-                      slipEntity: slip,
-                    );
+                    return SlipCard(slipEntity: slip);
                   },
                 );
               },

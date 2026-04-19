@@ -1,4 +1,5 @@
 import 'package:calculations/features/products/domain/entities/product.dart';
+import 'package:calculations/features/slips/domain/entities/slip_item_entity.dart';
 import 'package:calculations/features/slips/presentation/widget/calculation_input.dart';
 import 'package:calculations/core/widgets/product_select.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class CalculationStep extends StatefulWidget {
   final Function({required double total, required double perKg, required double kg}) onCalculationChanged;
   final Function(Product) onProductChange;
   final List<Product> products;
+  final SlipItemEntity? slipItem; 
   CalculationStep({
     super.key,
     this.rowTotal = 0.0,
@@ -17,6 +19,7 @@ class CalculationStep extends StatefulWidget {
     required this.delete,
     required this.onCalculationChanged,
     required this.onProductChange,
+    this.slipItem
   });
 
   @override
@@ -25,7 +28,6 @@ class CalculationStep extends StatefulWidget {
 
 class _CalculationStepState extends State<CalculationStep> {
   String? initialValue;
-  Product? _selectedProduct; 
   TextEditingController perKgController = TextEditingController(); 
   TextEditingController kgController = TextEditingController();
   String _totalPrice = "0.00";
@@ -33,7 +35,6 @@ class _CalculationStepState extends State<CalculationStep> {
   void handleProductChange(Product? newProduct) {
     if (newProduct == null) return;
     setState(() {
-      _selectedProduct = newProduct;
       perKgController.text = newProduct.perkg.toString();
     });
     widget.onProductChange(newProduct);
@@ -44,7 +45,7 @@ class _CalculationStepState extends State<CalculationStep> {
 
     setState(() {
       final total = perKg * kg;
-      _totalPrice = (total).toStringAsFixed(2);
+      _totalPrice = total.floor().toString();
       widget.onCalculationChanged(kg: kg, perKg: perKg, total: total);
     });
   }
@@ -52,10 +53,13 @@ class _CalculationStepState extends State<CalculationStep> {
   @override
   void initState() { 
     super.initState();
-    initialValue = widget.products.first.name;
+    initialValue = widget.slipItem != null? widget.slipItem!.product.id.toString(): widget.products.first.id.toString();
+    perKgController.text = widget.slipItem!.perKg != 0? widget.slipItem!.perKg.toString() : widget.products.first.perkg.toString();
     perKgController.text = widget.products.first.perkg.toString();
+    kgController.text = widget.slipItem != null? widget.slipItem!.kg.toString() : '0';
     perKgController.addListener(_calculatePrice);
     kgController.addListener(_calculatePrice);
+    _totalPrice= widget.slipItem != null? widget.slipItem!.rowTotal.floor().toString() : '0';
   }
 
   @override

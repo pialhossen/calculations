@@ -51,7 +51,7 @@ class _ProductFormState extends State<ProductForm> {
         context.read<ProductBloc>().add(
           ProductCreateEvent(
             nameController.text,
-            double.tryParse(perKgController.text)?.round() ?? 0,
+            double.tryParse(perKgController.text)?.floor() ?? 0,
           ),
         );
       }
@@ -64,7 +64,7 @@ class _ProductFormState extends State<ProductForm> {
           ProductUpdateEvent(
             widget.id!,
             nameController.text,
-            double.tryParse(perKgController.text)?.round() ?? 0,
+            double.tryParse(perKgController.text)?.floor() ?? 0,
           ),
         );
       }

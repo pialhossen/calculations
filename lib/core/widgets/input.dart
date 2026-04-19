@@ -31,30 +31,30 @@ class Input extends StatelessWidget {
           decoration: InputDecoration(
             hintText: placeholder,
             errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.red.shade400
-              )
+              borderSide: BorderSide(color: Colors.red.shade400, width: 1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.red.shade400, width: 1),
+              borderRadius: BorderRadius.circular(6),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(6)
+              borderSide: BorderSide(color: Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(6),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(6)
+              borderSide: BorderSide(color: Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(6),
             ),
             filled: true,
-            fillColor: Colors.white
+            fillColor: Colors.white,
           ),
           validator: (value) {
-            if(value!.isEmpty){
+            if (value!.isEmpty) {
               return "$placeholder is missing";
+            }
+            if (value.length > 12) {
+              return "$placeholder is too big";
             }
             return null;
           },
