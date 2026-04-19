@@ -4,7 +4,7 @@ import 'package:calculations/features/employees/domain/repository/employee_repos
 class GetAllEmployeeUseCase {
   final EmployeeRepository repository;
   GetAllEmployeeUseCase(this.repository);
-  Future<List<Employee>> execute() async {
-    return await repository.getEmployees();
+  Future<List<Employee>> execute(String? q) async {
+    return await repository.getEmployees(q);
   }
 }

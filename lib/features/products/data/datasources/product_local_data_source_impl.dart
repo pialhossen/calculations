@@ -3,7 +3,7 @@ import 'package:calculations/features/products/data/datasources/product_local_da
 import 'package:calculations/features/products/data/model/product_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-class ProductLocalDataSourceImpl implements ProductLocalDataSource{
+class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   @override
   Future<int> createProduct(ProductModel product) async {
     final db = await DatabaseHelper.instance.database;
@@ -17,11 +17,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource{
   @override
   Future<bool> deleteProduct(int id) async {
     final db = await DatabaseHelper.instance.database;
-    final result = await db.delete(
-      'product',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final result = await db.delete('product', where: 'id = ?', whereArgs: [id]);
     return result > 0;
   }
 
@@ -42,9 +38,24 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource{
   }
 
   @override
-  Future<List<ProductModel>> getProducts() async {
+  Future<List<ProductModel>> getProducts(String? q) async {
     final db = await DatabaseHelper.instance.database;
-    final maps = await db.query('product', orderBy: 'id DESC');
+
+    List<Map<String, dynamic>> maps;
+
+    if (q != null && q.trim().isNotEmpty) {
+      // Searches for products where the name contains the string Q
+      maps = await db.query(
+        'product',
+        where: 'name LIKE ?',
+        whereArgs: ['%$q%'],
+        orderBy: 'id DESC',
+      );
+    } else {
+      // Returns all products if no query is provided
+      maps = await db.query('product', orderBy: 'id DESC');
+    }
+
     return maps.map((map) => ProductModel.fromMap(map)).toList();
   }
 
@@ -61,5 +72,4 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource{
       whereArgs: [product.id],
     );
   }
-
 }

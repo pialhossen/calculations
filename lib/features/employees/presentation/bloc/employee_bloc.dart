@@ -42,7 +42,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState>{
     on<LoadEmployeesEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
       // try {
-        final employees = await getAllUseCase.execute();
+        final employees = await getAllUseCase.execute(event.q);
         emit(state.copyWith(isLoading: false, employees: employees));
       // } catch (e) {
       //   emit(state.copyWith(errorMessage: e.toString()));
@@ -52,7 +52,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState>{
       emit(state.copyWith(isLoading: true));
       // try {
         await deleteEmployeeUseCase.execute(event.id);
-        final employees = await getAllUseCase.execute();
+        final employees = await getAllUseCase.execute(event.q);
         emit(state.copyWith(isLoading: false, employees: employees));
       // } catch (e) {
       //   emit(state.copyWith(errorMessage: e.toString()));

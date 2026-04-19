@@ -6,5 +6,5 @@ abstract interface class SlipRepository {
   Future<SlipModel> updateSlip(int id, {required int employeeId, required double totalAmount, required List<SlipItemModel> slipItems, required String? note});
   Future<bool> deleteSlip(int id);
   Future<SlipModel> getSlip(int id);
-  Future<List<SlipModel>> getSlips();
+  Future<List<SlipModel>> getSlips(DateTime? dateTime);
 }

@@ -21,4 +21,7 @@ class ProductDeleteEvent extends ProductEvent{
   final int id;
   ProductDeleteEvent(this.id);
 }
-class LoadProductsEvent extends ProductEvent{}
+class LoadProductsEvent extends ProductEvent{
+  final String? q;
+  LoadProductsEvent({this.q});
+}

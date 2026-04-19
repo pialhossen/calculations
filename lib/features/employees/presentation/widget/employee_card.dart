@@ -36,7 +36,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
               TextButton(
                 onPressed: () {
                   context.read<EmployeeBloc>().add(
-                    EmployeeDeleteEvent(widget.employee.id!)
+                    EmployeeDeleteEvent(id: widget.employee.id!, q: null)
                   );
                   Navigator.of(context).pop();
                 },

@@ -29,9 +29,25 @@ class EmployeeLocalDataSourceImpl implements EmployeeLocalDataSource {
   }
 
   @override
-  Future<List<EmployeeModel>> getEmployees() async {
+  Future<List<EmployeeModel>> getEmployees(String? q) async {
     final db = await DatabaseHelper.instance.database;
-    final maps = await db.query('employee', orderBy: 'id DESC');
+
+    List<Map<String, dynamic>> maps;
+
+    if (q != null && q.trim().isNotEmpty) {
+      // We use the LIKE operator for partial matches
+      // %q% means it will find the text anywhere in the name or number
+      maps = await db.query(
+        'employee',
+        where: 'name LIKE ? OR number LIKE ?',
+        whereArgs: ['%$q%', '%$q%'],
+        orderBy: 'id DESC',
+      );
+    } else {
+      // If q is null or empty, fetch all
+      maps = await db.query('employee', orderBy: 'id DESC');
+    }
+
     return maps.map((map) => EmployeeModel.fromMap(map)).toList();
   }
 

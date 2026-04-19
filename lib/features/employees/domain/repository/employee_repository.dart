@@ -5,5 +5,5 @@ abstract interface class EmployeeRepository {
   Future<EmployeeModel> updateEmployee(int id,String name, String number);
   Future<bool> deleteEmployee(int id);
   Future<EmployeeModel> getEmployee(int id);
-  Future<List<EmployeeModel>> getEmployees();
+  Future<List<EmployeeModel>> getEmployees(String? q);
 }

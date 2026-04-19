@@ -4,7 +4,7 @@ import 'package:calculations/features/products/domain/repository/product_reposit
 class GetAllProductsUseCase {
   final ProductRepository repository;
   GetAllProductsUseCase(this.repository);
-  Future<List<Product>> execute() async {
-    return await repository.getProducts();
+  Future<List<Product>> execute(String? q) async {
+    return await repository.getProducts(q);
   }
 }

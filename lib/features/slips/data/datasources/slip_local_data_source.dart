@@ -5,5 +5,5 @@ abstract interface class SlipLocalDataSource {
   Future<int> updateSlip(SlipModel slip);
   Future<bool> deleteSlip(int id);
   Future<SlipModel> getSlip(int id);
-  Future<List<SlipModel>> getSlips();
+  Future<List<SlipModel>> getSlips(DateTime? datetime);
 }

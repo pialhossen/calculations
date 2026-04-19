@@ -10,6 +10,7 @@ class ProductState {
   final bool isDeleteSuccess;
   final bool isEditSuccess;
   final ProductActiveStatus lastActive;
+  final String? q;
 
   ProductState({
     this.products = const [],
@@ -19,6 +20,7 @@ class ProductState {
     this.isDeleteSuccess = false,
     this.isEditSuccess = false,
     this.lastActive = ProductActiveStatus.none,
+    this.q,
   });
   ProductState copyWith({
     List<Product>? products,

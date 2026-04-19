@@ -5,5 +5,5 @@ abstract interface class ProductRepository {
   Future<ProductModel> updateProduct(int id,String name, int perkg);
   Future<bool> deleteProduct(int id);
   Future<ProductModel> getProduct(int id);
-  Future<List<ProductModel>> getProducts();
+  Future<List<ProductModel>> getProducts(String? q);
 }

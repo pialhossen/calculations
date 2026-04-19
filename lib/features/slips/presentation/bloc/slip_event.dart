@@ -34,6 +34,10 @@ class LoadSingleSlipEvent extends SlipEvent {
 }
 class SlipDeleteEvent extends SlipEvent {
   final int id;
-  SlipDeleteEvent(this.id);
+  final DateTime dateTime;
+  SlipDeleteEvent({required this.id, required this.dateTime});
 }
-class LoadSlipEvent extends SlipEvent{}
+class LoadSlipEvent extends SlipEvent{
+  final DateTime dateTime;
+  LoadSlipEvent({required this.dateTime});
+}

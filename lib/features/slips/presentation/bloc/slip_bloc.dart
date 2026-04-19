@@ -44,13 +44,13 @@ class SlipBloc extends Bloc<SlipEvent, SlipState> {
     });
     on<LoadSlipEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-        final slips = await getAllSlipUseCase.execute();
-        emit(state.copyWith(isLoading: false, slips: slips));
+        final slips = await getAllSlipUseCase.execute(event.dateTime);
+        emit(state.copyWith(isLoading: false, selectedDate: event.dateTime, slips: slips));
     });
     on<SlipDeleteEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
         await deleteSlipUseCase.execute(event.id);
-        final slips = await getAllSlipUseCase.execute();
+        final slips = await getAllSlipUseCase.execute(event.dateTime);
         emit(state.copyWith(isLoading: false, slips: slips));
     });
     on<LoadSingleSlipEvent>((event, emit) async {

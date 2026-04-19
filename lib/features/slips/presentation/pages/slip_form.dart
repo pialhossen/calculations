@@ -52,7 +52,7 @@ class _SlipFormState extends State<SlipForm> {
     noteController = TextEditingController();
     // perKgController = TextEditingController();
     context.read<ProductBloc>().add(LoadProductsEvent());
-    context.read<EmployeeBloc>().add(LoadEmployeesEvent());
+    context.read<EmployeeBloc>().add(LoadEmployeesEvent(q: null));
     if (widget.id != null) {
       context.read<SlipBloc>().add(LoadSingleSlipEvent(widget.id!));
     }

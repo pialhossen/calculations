@@ -5,5 +5,5 @@ abstract interface class ProductLocalDataSource {
   Future<int> updateProduct(ProductModel product);
   Future<bool> deleteProduct(int id);
   Future<ProductModel> getProduct(int id);
-  Future<List<ProductModel>> getProducts();
+  Future<List<ProductModel>> getProducts(String? q);
 }

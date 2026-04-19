@@ -52,7 +52,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(state.copyWith(isLoading: true));
       // try {
         await deleteProductUseCase.execute(event.id);
-        final products = await getAllProductUseCase.execute();
+        final products = await getAllProductUseCase.execute(null);
         emit(state.copyWith(isLoading: false, products: products));
       // } catch (e) {
       //   emit(state.copyWith(errorMessage: e.toString()));
@@ -60,12 +60,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     });
     on<LoadProductsEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      // try {
-        final products = await getAllProductUseCase.execute();
+        final products = await getAllProductUseCase.execute(event.q);
         emit(state.copyWith(isLoading: false, products: products));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
   }
 }

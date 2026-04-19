@@ -17,6 +17,12 @@ class LoadSingleEmployeeData extends EmployeeEvent{
 }
 class EmployeeDeleteEvent extends EmployeeEvent {
   final int id;
-  EmployeeDeleteEvent(this.id);
+  final String? q;
+  EmployeeDeleteEvent({
+    required this.id, this.q
+  });
 }
-class LoadEmployeesEvent extends EmployeeEvent{}
+class LoadEmployeesEvent extends EmployeeEvent{
+  final String? q;
+  LoadEmployeesEvent({this.q});
+}

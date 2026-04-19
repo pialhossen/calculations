@@ -23,8 +23,8 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<List<ProductModel>> getProducts() async {
-    return await productLocalDataSource.getProducts();
+  Future<List<ProductModel>> getProducts(String? q) async {
+    return await productLocalDataSource.getProducts(q);
   }
 
   @override

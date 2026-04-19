@@ -4,7 +4,7 @@ import 'package:calculations/features/slips/domain/repository/slip_repository.da
 class GetAllSlipUseCase {
   final SlipRepository repository;
   GetAllSlipUseCase(this.repository);
-  Future<List<SlipModel>> execute() async {
-    return await repository.getSlips();
+  Future<List<SlipModel>> execute(DateTime? dateTime) async {
+    return await repository.getSlips(dateTime);
   }
 }

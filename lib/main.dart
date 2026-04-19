@@ -67,7 +67,7 @@ void main() {
             getAllUseCase: getAllUseCase,
             deleteEmployeeUseCase: deleteEmployeeUseCase,
             getSingleEmployeeModelUseCase: getSingleEmployeeModelUseCase
-          )..add(LoadEmployeesEvent()),
+          )..add(LoadEmployeesEvent(q: null)),
         ),
         BlocProvider(
           create: (context) => ProductBloc(
@@ -85,7 +85,7 @@ void main() {
             getAllSlipUseCase: getAllSlipUseCase, 
             deleteSlipUseCase: deleteSlipUseCase, 
             getSingleSlipModelUseCase: getSingleSlipModelUseCase
-          )..add(LoadSlipEvent())
+          )..add(LoadSlipEvent(dateTime: DateTime.now()))
         )
       ],
       child: const MyApp(),

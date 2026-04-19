@@ -1,4 +1,5 @@
 import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
+import 'package:calculations/features/employees/presentation/bloc/employee_event.dart'; // Make sure to import events
 import 'package:calculations/features/employees/presentation/bloc/employee_state.dart';
 import 'package:calculations/features/employees/presentation/widget/employee_card.dart';
 import 'package:calculations/features/employees/presentation/pages/employee_form.dart';
@@ -17,110 +18,122 @@ class Employees extends StatefulWidget {
 
 class _EmployeesState extends State<Employees> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    TextEditingController searchController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.search),
-                SizedBox(width: 10), // spacing
-                Expanded(
-                  child: TextField(
-                    onChanged: (value) {
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Search here",
-                      border: InputBorder.none,
-                      isDense: true,
+      // 1. BlocConsumer now wraps the entire body
+      body: BlocConsumer<EmployeeBloc, EmployeeState>(
+        listenWhen: (prev, curr) =>
+            (curr.isDeleteSuccess && !prev.isDeleteSuccess) ||
+            (curr.isEditSuccess && !prev.isEditSuccess),
+        listener: (context, state) {
+          if (state.isDeleteSuccess || state.isEditSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.isDeleteSuccess
+                    ? 'Delete Successful!'
+                    : 'Edit Successful!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+          if(state.q != null && state.q != ""){
+            searchController.text = state.q ?? "";
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            children: [
+              // Search Bar
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                height: 55,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: BlocConsumer<EmployeeBloc, EmployeeState>(
-              listenWhen: (prev, curr) =>
-                  curr.isDeleteSuccess && !prev.isDeleteSuccess,
-              listener: (context, state) {
-                if(state.isDeleteSuccess){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Delete Successful!'),
-                      backgroundColor: Colors.green,
+                child: Row(
+                  children: [
+                    const Icon(Icons.search, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          context.read<EmployeeBloc>().add(LoadEmployeesEvent(q: value));
+                        },
+                        decoration: const InputDecoration(
+                          hintText: "Search here",
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                      ),
                     ),
-                  );
-                }else if(state.isEditSuccess){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Edit Successful!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state.errorMessage != null) {
-                  return Center(
-                    child: Text(
-                      state.errorMessage!,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  );
-                }
+                  ],
+                ),
+              ),
 
-                if (state.isLoading && state.employees.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state.employees.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "No Employee Found",
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
-                    ),
-                  );
-                }
-                return ListView.builder(
-                  itemCount: state.employees.length,
-                  padding: EdgeInsets.only(top: 20, bottom: 70),
-                  itemBuilder: (context, index) {
-                    final employee = state.employees[index];
-                    return EmployeeCard(employee: employee);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+              // List View Logic
+              Expanded(
+                child: _buildListContent(state),
+              ),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => EmployeeForm(),
+              builder: (BuildContext context) => const EmployeeForm(),
             ),
           );
         },
-        backgroundColor: Color(0xFF5B58FF),
-        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: const Color(0xFF5B58FF),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  // Helper method to keep the builder clean
+  Widget _buildListContent(EmployeeState state) {
+    if (state.errorMessage != null) {
+      return Center(
+        child: Text(state.errorMessage!, style: const TextStyle(color: Colors.red)),
+      );
+    }
+
+    if (state.isLoading && state.employees.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.employees.isEmpty) {
+      return const Center(
+        child: Text(
+          "No Employee Found",
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: state.employees.length,
+      padding: const EdgeInsets.only(top: 10, bottom: 80, left: 16, right: 16),
+      itemBuilder: (context, index) {
+        final employee = state.employees[index];
+        return EmployeeCard(employee: employee);
+      },
     );
   }
 }

@@ -5,5 +5,5 @@ abstract interface class EmployeeLocalDataSource {
   Future<int> updateEmployee(EmployeeModel employee);
   Future<bool> deleteEmployee(int id);
   Future<EmployeeModel> getEmployee(int id);
-  Future<List<EmployeeModel>> getEmployees();
+  Future<List<EmployeeModel>> getEmployees(String? q);
 }

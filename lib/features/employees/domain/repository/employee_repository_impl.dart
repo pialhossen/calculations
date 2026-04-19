@@ -12,8 +12,8 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
     return newEmployee.copyWith(id: id);
   }
   @override
-  Future<List<EmployeeModel>> getEmployees() async {
-    return await employeeLocalDataSource.getEmployees();
+  Future<List<EmployeeModel>> getEmployees(String? q) async {
+    return await employeeLocalDataSource.getEmployees(q);
   }
   
   @override

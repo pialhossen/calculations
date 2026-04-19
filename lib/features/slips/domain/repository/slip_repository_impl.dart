@@ -40,8 +40,8 @@ class SlipRepositoryImpl implements SlipRepository {
   }
 
   @override
-  Future<List<SlipModel>> getSlips() async {
-    return await slipLocalDataSource.getSlips();
+  Future<List<SlipModel>> getSlips(DateTime? dateTime) async {
+    return await slipLocalDataSource.getSlips(dateTime);
   }
 
   @override

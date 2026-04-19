@@ -33,7 +33,7 @@ class SlipCard extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   context.read<SlipBloc>().add(
-                    SlipDeleteEvent(slipEntity.id!)
+                    SlipDeleteEvent(id: slipEntity.id!, dateTime: DateTime.now())
                   );
                   Navigator.of(context).pop();
                 },
