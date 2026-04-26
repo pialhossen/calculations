@@ -2,6 +2,7 @@ import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_event.dart';
 import 'package:calculations/features/employees/presentation/pages/employee_form.dart';
+import 'package:calculations/features/loans/presentation/pages/loan_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -111,6 +112,16 @@ class _EmployeeCardState extends State<EmployeeCard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Container(
+                      width: 40,
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoanList()));
+                        },
+                        child: Icon(Icons.edit_document, size: 25),
+                      ),
+                    ),
                     Container(
                       width: 40,
                       alignment: Alignment.centerRight,

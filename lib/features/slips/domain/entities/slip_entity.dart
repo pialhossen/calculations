@@ -1,8 +1,6 @@
 // slip_entity.dart
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/slips/data/model/slip_item_model.dart';
-import 'package:calculations/features/slips/data/model/slip_model.dart';
-// 1. Change this import to the correct filename
 
 class SlipEntity {
   final int? id;

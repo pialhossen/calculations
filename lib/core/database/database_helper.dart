@@ -79,6 +79,7 @@ class DatabaseHelper {
         amount REAL,
         type INTEGER, -- 1 = addition, 0 = subtraction
         datetime TEXT,
+        note TEXT NULL,
         FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
       )
     ''');
@@ -115,6 +116,25 @@ class DatabaseHelper {
           WHERE id = NEW.employee_id;
         END;
       ''');
+    await db.execute('''
+        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_update
+        AFTER UPDATE ON loan
+        BEGIN
+          UPDATE employee
+          SET loan_amount = loan_amount 
+            - CASE 
+                WHEN OLD.type = 1 THEN OLD.amount
+                WHEN OLD.type = 0 THEN -OLD.amount
+                ELSE 0
+              END
+            + CASE 
+                WHEN NEW.type = 1 THEN NEW.amount
+                WHEN NEW.type = 0 THEN -NEW.amount
+                ELSE 0
+              END
+          WHERE id = NEW.employee_id;
+        END;
+      ''');
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -133,13 +153,14 @@ class DatabaseHelper {
       // 🔹 Create loan table
       await db.execute('''
         CREATE TABLE loan(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          employee_id INTEGER NOT NULL,
-          amount REAL,
-          type INTEGER, -- 1 = addition, 0 = subtraction
-          datetime TEXT,
-          FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
-        )
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        employee_id INTEGER NOT NULL,
+        amount REAL,
+        type INTEGER, -- 1 = addition, 0 = subtraction
+        datetime TEXT,
+        note TEXT NULL,
+        FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
+      )
       ''');
       await db.execute('''
         CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_insert
@@ -152,6 +173,25 @@ class DatabaseHelper {
               WHEN NEW.type = 0 THEN -NEW.amount
               ELSE 0
             END
+          WHERE id = NEW.employee_id;
+        END;
+      ''');
+      await db.execute('''
+        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_update
+        AFTER UPDATE ON loan
+        BEGIN
+          UPDATE employee
+          SET loan_amount = loan_amount 
+            - CASE 
+                WHEN OLD.type = 1 THEN OLD.amount
+                WHEN OLD.type = 0 THEN -OLD.amount
+                ELSE 0
+              END
+            + CASE 
+                WHEN NEW.type = 1 THEN NEW.amount
+                WHEN NEW.type = 0 THEN -NEW.amount
+                ELSE 0
+              END
           WHERE id = NEW.employee_id;
         END;
       ''');
