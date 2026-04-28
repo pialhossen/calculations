@@ -78,7 +78,7 @@ class DatabaseHelper {
         employee_id INTEGER NOT NULL,
         amount REAL,
         type INTEGER, -- 1 = addition, 0 = subtraction
-        datetime TEXT,
+        date_created TEXT,
         note TEXT NULL,
         FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
       )
@@ -157,7 +157,7 @@ class DatabaseHelper {
         employee_id INTEGER NOT NULL,
         amount REAL,
         type INTEGER, -- 1 = addition, 0 = subtraction
-        datetime TEXT,
+        date_created TEXT,
         note TEXT NULL,
         FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
       )
