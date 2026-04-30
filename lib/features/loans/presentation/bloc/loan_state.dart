@@ -3,6 +3,7 @@ import 'package:calculations/features/loans/domain/entities/loan.dart';
 
 class LoanState {
   final Employee? employee;
+  final double totalLoan;
   final List<Loan> loans;
   final bool isLoading;
   final String? errorMessage;
@@ -13,6 +14,7 @@ class LoanState {
     this.loans = const [],
     this.isLoading = false,
     this.errorMessage,
+    this.totalLoan = 0,
     this.isDeleteSuccess = false,
     this.isEditSuccess = false, 
     this.employee,
@@ -22,6 +24,7 @@ class LoanState {
   LoanState copyWith({
     List<Loan>? loans,
     Employee? employee,
+    double? totalLoan,
     bool? isLoading,
     String? errorMessage,
     bool? isDeleteSuccess,
@@ -30,6 +33,7 @@ class LoanState {
     return LoanState(
       loans: loans ?? this.loans,
       employee: employee ?? this.employee,
+      totalLoan: totalLoan ?? this.totalLoan,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       isDeleteSuccess: isDeleteSuccess ?? this.isDeleteSuccess,

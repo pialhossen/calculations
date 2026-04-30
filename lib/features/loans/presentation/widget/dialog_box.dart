@@ -1,10 +1,35 @@
+
+
+import 'package:calculations/features/employees/domain/entities/employee.dart';
+import 'package:calculations/features/loans/presentation/bloc/loan_bloc.dart';
+import 'package:calculations/features/loans/presentation/bloc/loan_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DialogBox extends StatelessWidget {
-  const DialogBox({super.key});
+  final TextEditingController amountController;
+  final TextEditingController noteController;
+  final Employee employee;
+  const DialogBox({
+    super.key, 
+    required this.amountController, 
+    required this.noteController,
+    required this.employee,
+  });
 
   @override
   Widget build(BuildContext context) {
+    void createNewLoan() {
+      context.read<LoanBloc>().add(
+        LoanCreateEvent(
+          amount: double.tryParse(amountController.text.trim()) ?? 0,
+          employeeId: employee.id!,
+          type: 1,
+          note: noteController.text
+        )
+      );
+      Navigator.pop(context);
+    }
     return AlertDialog(
       backgroundColor: Colors.white,
       // Removes the rounded corners from the dialog
@@ -33,6 +58,7 @@ class DialogBox extends StatelessWidget {
                   borderSide: BorderSide(color: Colors.blue, width: 2),
                 ),
               ),
+              controller: amountController,
             ),
             const SizedBox(height: 15),
 
@@ -50,6 +76,7 @@ class DialogBox extends StatelessWidget {
                   borderSide: BorderSide(color: Colors.blue, width: 2),
                 ),
               ),
+              controller: noteController,
             ),
             const SizedBox(height: 20),
 
@@ -69,10 +96,7 @@ class DialogBox extends StatelessWidget {
                 
                 // Save Button
                 MaterialButton(
-                  onPressed: () {
-                    // Handle save logic
-                    Navigator.pop(context);
-                  },
+                  onPressed: createNewLoan,
                   color: Colors.blue,
                   elevation: 0,
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),

@@ -35,6 +35,7 @@ class SlipModel extends SlipEntity {
         id: map['employee_id'],
         name: map['employee_name'] ?? '',
         number: map['employee_number'] ?? '',
+        loanAmount: double.tryParse(map['employee_loan_amount'] ?? '0') ?? 0,
       ),
       // CONVERT MAPS TO OBJECTS HERE:
       slipItems: itemMaps.map((item) => SlipItemModel.fromMap(item)).toList(),

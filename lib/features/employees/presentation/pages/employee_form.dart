@@ -20,16 +20,19 @@ class _EmployeeFormState extends State<EmployeeForm> {
 
   late TextEditingController nameController;
   late TextEditingController phoneController;
+  late TextEditingController loanController;
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController();
     phoneController = TextEditingController();
+    loanController = TextEditingController();
     if (widget.id != null) {
       context.read<EmployeeBloc>().add(LoadSingleEmployeeData(widget.id!));
       nameController.text = ""; 
       phoneController.text = "";
+      loanController.text = "0";
     }
   }
 
@@ -37,6 +40,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
   void dispose() {
     nameController.dispose();
     phoneController.dispose();
+    loanController.dispose();
     super.dispose();
   }
 
@@ -46,7 +50,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
         context.read<EmployeeBloc>().add(
-          EmployeeCreateEvent(nameController.text, phoneController.text),
+          EmployeeCreateEvent(nameController.text, phoneController.text, double.tryParse(loanController.text) ?? 0.0),
         );
       }
     }
@@ -54,7 +58,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
         context.read<EmployeeBloc>().add(
-          EmployeeUpdateEvent(widget.id!,nameController.text, phoneController.text),
+          EmployeeUpdateEvent(widget.id!,nameController.text, phoneController.text, double.tryParse(loanController.text) ?? 0.0),
         );
       }
     }
@@ -87,6 +91,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
           if (state.selectedEmployee != null) {
             nameController.text = state.selectedEmployee!.name;
             phoneController.text = state.selectedEmployee!.number;
+            loanController.text = state.selectedEmployee!.loanAmount.toString();
           } else if (state.errorMessage != null) {
             ScaffoldMessenger.of(
               context,
@@ -113,6 +118,12 @@ class _EmployeeFormState extends State<EmployeeForm> {
                     label: 'PHONE NUMBER',
                     placeholder: 'Enter Employee Phone',
                     controller: phoneController,
+                  ),
+                  SizedBox(height: 20),
+                  Input(
+                    label: 'Loan',
+                    placeholder: 'Enter Loan Amount',
+                    controller: loanController,
                   ),
                   GestureDetector(
                     onTap: widget.id == null? createEmployee: updateEmployee,

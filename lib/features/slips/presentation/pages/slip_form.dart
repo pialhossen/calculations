@@ -152,16 +152,23 @@ class _SlipFormState extends State<SlipForm> {
                   return Center(child: const CircularProgressIndicator());
                 }
                 if (employees == null || products == null) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 10),
-                          Text("Loading data..."),
-                        ],
+                  return const Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          mainAxisSize:
+                              MainAxisSize.min, // Hugs the content tightly
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16),
+                            Text(
+                              "Loading data...",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

@@ -22,50 +22,30 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState>{
   }) : super(EmployeeState()) {
     on<EmployeeCreateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      // try {
-        final newEmployee = await createEmployeeUseCase.execute(event.name, event.number);
+        final newEmployee = await createEmployeeUseCase.execute(event.name, event.number, event.loanAmount);
         emit(state.copyWith(isLoading: false, employees: [newEmployee, ...state.employees]));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
     on<EmployeeUpdateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      // try {
-        final updatedEmployee = await updateEmployeeUseCase.execute(event.id, event.name, event.number);
+        final updatedEmployee = await updateEmployeeUseCase.execute(event.id, event.name, event.number, event.loanAmount);
         final updateEmployeeList = state.employees.map((employee) => employee.id == event.id? updatedEmployee: employee).toList();
         emit(state.copyWith(isLoading: false, employees: updateEmployeeList));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
     on<LoadEmployeesEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      // try {
         final employees = await getAllUseCase.execute(event.q);
         emit(state.copyWith(isLoading: false, employees: employees));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
     on<EmployeeDeleteEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
-      // try {
         await deleteEmployeeUseCase.execute(event.id);
         final employees = await getAllUseCase.execute(event.q);
         emit(state.copyWith(isLoading: false, employees: employees));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
     on<LoadSingleEmployeeData>((event, emit) async {
       emit(state.copyWith(isLoading: true, selectedEmployee: null));
-      // try {
         final employee = await getSingleEmployeeModelUseCase.execute(event.id);
         emit(state.copyWith(isLoading: false, selectedEmployee: employee));
-      // } catch (e) {
-      //   emit(state.copyWith(errorMessage: e.toString()));
-      // }
     });
   }
 }

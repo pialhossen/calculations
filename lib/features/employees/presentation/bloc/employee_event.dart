@@ -3,13 +3,15 @@ abstract class EmployeeEvent {}
 class EmployeeCreateEvent extends EmployeeEvent {
   final String name;
   final String number;
-  EmployeeCreateEvent(this.name, this.number);
+  final double loanAmount;
+  EmployeeCreateEvent(this.name, this.number, this.loanAmount);
 }
 class EmployeeUpdateEvent extends EmployeeEvent {
   final int id;
   final String name;
   final String number;
-  EmployeeUpdateEvent(this.id, this.name, this.number);
+  final double loanAmount;
+  EmployeeUpdateEvent(this.id, this.name, this.number, this.loanAmount);
 }
 class LoadSingleEmployeeData extends EmployeeEvent{
   final int id;

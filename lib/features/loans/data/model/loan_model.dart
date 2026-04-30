@@ -32,6 +32,7 @@ class LoanModel extends Loan {
         id: map['employee_id'] ?? 1,
         name: map['employee_name'] ?? '',
         number: map['employee_number'] ?? '',
+        loanAmount: map['loan_amount'] ?? 0,
       ),
       note: map['note'],
     );

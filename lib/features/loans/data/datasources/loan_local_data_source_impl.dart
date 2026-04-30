@@ -47,6 +47,7 @@ class LoanLocalDataSourceImpl implements LoanLocalDataSource {
       'loan',
       where: 'employee_id = ?',
       whereArgs: [employee.id],
+      orderBy: "id DESC"
     );
 
     return maps.map((map) => LoanModel.fromMap(map)).toList();

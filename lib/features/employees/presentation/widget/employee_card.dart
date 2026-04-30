@@ -117,7 +117,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoanList()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoanList(employee: widget.employee,)));
                         },
                         child: Icon(Icons.edit_document, size: 25),
                       ),

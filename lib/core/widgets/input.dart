@@ -53,7 +53,7 @@ class Input extends StatelessWidget {
             if (value!.isEmpty) {
               return "$placeholder is missing";
             }
-            if (value.length > 12) {
+            if (value.length > 20) {
               return "$placeholder is too big";
             }
             return null;

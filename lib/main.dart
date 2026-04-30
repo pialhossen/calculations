@@ -8,6 +8,14 @@ import 'package:calculations/features/employees/domain/use_cases/get_single_empl
 import 'package:calculations/features/employees/domain/use_cases/update_employee_use_case.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_event.dart';
+import 'package:calculations/features/loans/domain/repository/loan_repository_impl.dart';
+import 'package:calculations/features/loans/domain/use_cases/create_loan_use_case.dart';
+import 'package:calculations/features/loans/domain/use_cases/delete_loan_use_case.dart';
+import 'package:calculations/features/loans/domain/use_cases/get_all_loan_of_employee_use_case.dart';
+import 'package:calculations/features/loans/domain/use_cases/get_single_loan_use_case.dart';
+import 'package:calculations/features/loans/domain/use_cases/update_loan_use_case.dart';
+import 'package:calculations/features/loans/presentation/bloc/loan_bloc.dart';
+import 'package:calculations/features/loans/presentation/bloc/loan_event.dart';
 import 'package:calculations/features/products/domain/repository/product_repository_impl.dart';
 import 'package:calculations/features/products/domain/use_cases/create_product_use_case.dart';
 import 'package:calculations/features/products/domain/use_cases/delete_product_use_case.dart';
@@ -57,6 +65,13 @@ void main() {
   final getSingleSlipModelUseCase = GetSingleSlipModelUseCase(slipRepository);
   final updateSlipUseCase = UpdateSlipUseCase(slipRepository);
 
+  final loanRepository = LoanRepositoryImpl();
+  final createLoanUseCase = CreateLoanUseCase(loanRepository);
+  final updateLoanUseCase = UpdateLoanUseCase(loanRepository);
+  final getSingleLoanUseCase = GetSingleLoanUseCase(loanRepository);
+  final getAllLoanOfEmployeeUseCase = GetAllLoanOfEmployeeUseCase(loanRepository);
+  final deleteLoanUseCase = DeleteLoanUseCase(loanRepository);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -86,6 +101,15 @@ void main() {
             deleteSlipUseCase: deleteSlipUseCase, 
             getSingleSlipModelUseCase: getSingleSlipModelUseCase
           )..add(LoadSlipEvent(dateTime: DateTime.now()))
+        ),
+        BlocProvider(
+          create: (context) => LoanBloc(
+            createLoanUseCase: createLoanUseCase, 
+            updateLoanUseCase: updateLoanUseCase, 
+            getSingleLoanUseCase: getSingleLoanUseCase, 
+            getAllLoanOfEmployeeUseCase: getAllLoanOfEmployeeUseCase, 
+            deleteLoanUseCase: deleteLoanUseCase
+          )
         )
       ],
       child: const MyApp(),
