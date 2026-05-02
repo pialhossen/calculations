@@ -3,6 +3,7 @@ import 'package:calculations/features/loans/presentation/bloc/loan_bloc.dart';
 import 'package:calculations/features/loans/presentation/bloc/loan_event.dart';
 import 'package:calculations/features/loans/presentation/bloc/loan_state.dart';
 import 'package:calculations/features/loans/presentation/widget/dialog_box.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,7 @@ class _LoanListState extends State<LoanList> {
   int? selectedIndex;
   late TextEditingController amountController;
   late TextEditingController noteController;
+  final formKey = GlobalKey<FormState>();
 
   void createNewLoan() {
     showDialog(
@@ -28,6 +30,7 @@ class _LoanListState extends State<LoanList> {
           amountController: amountController,
           noteController: noteController,
           employee: widget.employee,
+          formkey: formKey,
         );
       },
     );
@@ -39,6 +42,10 @@ class _LoanListState extends State<LoanList> {
     amountController = TextEditingController();
     noteController = TextEditingController();
     super.initState();
+  }
+
+  void deleteLoan({required BuildContext context, required int id}) {
+    context.read<LoanBloc>().add(LoanDeleteEvent(id));
   }
 
   @override
@@ -123,7 +130,7 @@ class _LoanListState extends State<LoanList> {
                           border: Border.all(color: Colors.grey[300]!),
                         ),
                         child: Text(
-                          "${state.totalLoan.toString()} TK",
+                          "${state.totalLoan.toInt().toString()} TK",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
@@ -167,99 +174,129 @@ class _LoanListState extends State<LoanList> {
       itemCount: state.loans.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            context.read<LoanBloc>().add(
-              LoanUpdateEvent(
-                employeeId: widget.employee.id!,
-                id: state.loans[index].id!,
-                type: state.loans[index].type == 1 ? 0 : 1,
+        return Slidable(
+          endActionPane: ActionPane(
+            motion: StretchMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) {
+                  deleteLoan(context: context, id: state.loans[index].id!);
+                },
+                icon: Icons.delete,
+                borderRadius: BorderRadius.circular(12),
+                backgroundColor: Colors.red.shade300,
               ),
-            );
-          },
-          onLongPress: () {
-            // open loan edit form and edit loan
-            print('Loan Long Pressed');
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            decoration: BoxDecoration(
-              color: state.loans[index].type == 0 ? Colors.red : Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: state.loans[index].type == 0
-                    ? Colors.red
-                    : Colors.grey[200]!,
-              ),
-              boxShadow: state.loans[index].type == 0
-                  ? [
-                      BoxShadow(
-                        color: Colors.red.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : [],
-            ),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: state.loans[index].type == 0
-                        ? Colors.white24
-                        : Colors.blue[50],
-                    child: Icon(
-                      Icons.money,
-                      color: state.loans[index].type == 0
-                          ? Colors.white
-                          : Colors.blue,
-                    ),
-                  ),
-                  title: Text(
-                    "Loan #${state.loans[index].id.toString()}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: state.loans[index].type == 0
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                  ),
-                  subtitle: Text(
-                    "${DateFormat('dd/MM/yy').format(state.loans[index].dateTime)} ${DateFormat('hh:mm a').format(state.loans[index].dateTime)}",
-                    style: TextStyle(
-                      color: state.loans[index].type == 0
-                          ? Colors.white70
-                          : Colors.grey[600],
-                    ),
-                  ),
-                  trailing: Text(
-                    state.loans[index].amount.toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: state.loans[index].type == 0
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                  ),
+            ],
+          ),
+          child: GestureDetector(
+            onTap: () {
+              context.read<LoanBloc>().add(
+                LoanUpdateEvent(
+                  employeeId: widget.employee.id!,
+                  id: state.loans[index].id!,
+                  amount: state.loans[index].amount,
+                  note: state.loans[index].note ?? "",
+                  type: state.loans[index].type == 1 ? 0 : 1,
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      state.loans[index].note.toString(),
+              );
+            },
+            onLongPress: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  print('This Is Fired');
+                  amountController.text = state.loans[index].amount.toInt().toString();
+                  noteController.text = state.loans[index].note!;
+                  return DialogBox(
+                    amountController: amountController,
+                    noteController: noteController,
+                    employee: widget.employee,
+                    formkey: formKey,
+                    loan: state.loans[index],
+                  );
+                },
+              );
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: state.loans[index].type == 0 ? Colors.red : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: state.loans[index].type == 0
+                      ? Colors.red
+                      : Colors.grey[200]!,
+                ),
+                boxShadow: state.loans[index].type == 0
+                    ? [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: state.loans[index].type == 0
+                          ? Colors.white24
+                          : Colors.blue[50],
+                      child: Icon(
+                        Icons.money,
+                        color: state.loans[index].type == 0
+                            ? Colors.white
+                            : Colors.blue,
+                      ),
+                    ),
+                    title: Text(
+                      "Loan #${state.loans[index].id.toString()}",
                       style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: state.loans[index].type == 0
                             ? Colors.white
                             : Colors.black,
-                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "${DateFormat('dd/MM/yy').format(state.loans[index].dateTime)} ${DateFormat('hh:mm a').format(state.loans[index].dateTime)}",
+                      style: TextStyle(
+                        color: state.loans[index].type == 0
+                            ? Colors.white70
+                            : Colors.grey[600],
+                      ),
+                    ),
+                    trailing: Text(
+                      state.loans[index].amount.toInt().toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: state.loans[index].type == 0
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        state.loans[index].note.toString(),
+                        style: TextStyle(
+                          color: state.loans[index].type == 0
+                              ? Colors.white
+                              : Colors.black,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -45,16 +45,16 @@ class LoanRepositoryImpl implements LoanRepository{
   }
   
   @override
-  Future<LoanModel> updateLoan({required int id, required int employeeId, double? amount, required int type, String? note}) async {
+  Future<LoanModel> updateLoan({required int id, required int employeeId, required double amount, required int type, required String note}) async {
     final loan = await loanLocalDataSource.getLoan(id);
     final employee = await employeeLocalDataSource.getEmployee(employeeId);
     final updatedLoan = LoanModel(
       id: id,
       employee: employee,
       dateTime: loan.dateTime,
-      amount: amount ?? loan.amount,
+      amount: amount,
       type: type,
-      note: note ?? loan.note,
+      note: note,
     );
     await loanLocalDataSource.updateLoan(
       updatedLoan,

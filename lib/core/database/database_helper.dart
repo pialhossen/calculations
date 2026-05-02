@@ -34,7 +34,7 @@ class DatabaseHelper {
         name TEXT,
         number TEXT,
         loan_amount REAL DEFAULT 0,
-        image TEXT
+        image TEXT NULL
       )
     ''');
 
@@ -43,7 +43,7 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         name TEXT,
         perkg INTEGER,
-        image TEXT
+        image TEXT NULL
       )
     ''');
 
@@ -142,13 +142,9 @@ class DatabaseHelper {
 
     if (oldVersion < 2) {
       // 🔹 Add new columns to employee
-      await db.execute(
-        'ALTER TABLE employee ADD COLUMN loan_amount REAL DEFAULT 0',
-      );
-      await db.execute('ALTER TABLE employee ADD COLUMN image TEXT');
-
-      // 🔹 Add new column to product
-      await db.execute('ALTER TABLE product ADD COLUMN image TEXT');
+      await db.execute('ALTER TABLE employee ADD COLUMN loan_amount REAL DEFAULT 0');
+      await db.execute('ALTER TABLE employee ADD COLUMN image TEXT NULL');
+      await db.execute('ALTER TABLE product ADD COLUMN image TEXT NULL');
 
       // 🔹 Create loan table
       await db.execute('''

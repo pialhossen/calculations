@@ -4,7 +4,19 @@ import 'package:calculations/features/loans/domain/repository/loan_repository.da
 class UpdateLoanUseCase {
   final LoanRepository repository;
   UpdateLoanUseCase(this.repository);
-  Future<LoanModel> execute({ required int id, required employeeId, required int type }) async {
-    return await repository.updateLoan(id: id,employeeId: employeeId, type: type);
+  Future<LoanModel> execute({
+    required int id,
+    required int employeeId,
+    required int type,
+    required double amount,
+    required String note,
+  }) async {
+    return await repository.updateLoan(
+      id: id,
+      employeeId: employeeId,
+      type: type,
+      amount: amount,
+      note: note,
+    );
   }
 }

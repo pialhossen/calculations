@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:calculations/core/utils/pick_image.dart';
 import 'package:calculations/core/widgets/input.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
 import 'package:calculations/features/products/presentation/bloc/product_state.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +27,18 @@ class _ProductFormState extends State<ProductForm> {
 
   late TextEditingController nameController;
   late TextEditingController perKgController;
+
+
+  File? image;
+
+  void selectImage() async {
+    final pickedImage = await pickImage();
+    if (pickedImage != null) {
+      setState(() {
+        image = pickedImage;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -114,6 +130,43 @@ class _ProductFormState extends State<ProductForm> {
               key: formKey,
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      selectImage();
+                    },
+                    child: image == null
+                        ? DottedBorder(
+                            color: Colors.grey,
+                            strokeWidth: 2,
+                            dashPattern: const [10, 2],
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(10),
+                            child: SizedBox(
+                              height: 150,
+                              width: double.infinity,
+                              child: const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.folder_open, size: 40),
+                                  SizedBox(height: 15),
+                                  Text(
+                                    'Select your image',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 200,
+                              child: Image.file(image!, fit: BoxFit.cover),
+                            ),
+                          ),
+                  ),
+                  SizedBox(height: 20),
                   Input(
                     label: 'NAME',
                     placeholder: 'Enter Product Name',

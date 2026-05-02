@@ -1,3 +1,4 @@
+import 'package:calculations/features/loans/data/model/loan_model.dart';
 import 'package:calculations/features/loans/domain/use_cases/create_loan_use_case.dart';
 import 'package:calculations/features/loans/domain/use_cases/delete_loan_use_case.dart';
 import 'package:calculations/features/loans/domain/use_cases/get_all_loan_of_employee_use_case.dart';
@@ -40,30 +41,23 @@ class LoanBloc extends Bloc<LoanEvent, LoanState> {
     on<LoanUpdateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
 
-      final oldLoan = state.loans.firstWhere((loan) => loan.id == event.id);
-
       final updatedLoan = await updateLoanUseCase.execute(
         id: event.id,
         employeeId: event.employeeId,
         type: event.type,
+        amount: event.amount,
+        note: event.note,
       );
 
-      print(oldLoan.type);
-      print(event.type);
+      double newTotal = 0;
 
       final updatedList = state.loans.map((loan) {
-        return loan.id == event.id ? updatedLoan : loan;
+        final currentTotal = loan.id == event.id ? updatedLoan : loan;
+        if(currentTotal.type == 1){
+          newTotal = newTotal + currentTotal.amount;
+        } 
+        return currentTotal;
       }).toList();
-
-      double newTotal = state.totalLoan;
-
-      if (oldLoan.type == 0 && event.type == 1) {
-        newTotal += oldLoan.amount;
-      }
-
-      else if (oldLoan.type == 1 && event.type == 0) {
-        newTotal -= oldLoan.amount;
-      }
 
       emit(
         state.copyWith(
@@ -72,6 +66,7 @@ class LoanBloc extends Bloc<LoanEvent, LoanState> {
           totalLoan: newTotal,
         ),
       );
+
     });
     on<LoadLoansEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
@@ -88,11 +83,16 @@ class LoanBloc extends Bloc<LoanEvent, LoanState> {
     });
     on<LoanDeleteEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
+      final LoanModel selectedLoan = await getSingleLoanUseCase.execute(event.id);
+      var updatedTotalLoan = state.totalLoan;
+      if(selectedLoan.type == 1){
+        updatedTotalLoan = state.totalLoan - selectedLoan.amount;
+      }
       await deleteLoanUseCase.execute(event.id);
       final updatedLoans = state.loans
           .where((loan) => loan.id != event.id)
           .toList();
-      emit(state.copyWith(isLoading: false, loans: updatedLoans));
+      emit(state.copyWith(isLoading: false, loans: updatedLoans, totalLoan: updatedTotalLoan));
     });
   }
 }
