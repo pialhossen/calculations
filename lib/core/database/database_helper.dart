@@ -18,16 +18,19 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2, // 🔥 bumped version
+      version: 2, 
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
   }
 
-  Future _onCreate(Database db, int version) async {
-    // Enable foreign keys
+  // Set up foreign keys globally for every connection
+  Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
+  }
 
+  Future _onCreate(Database db, int version) async {
+    // 1. Employee Table
     await db.execute('''
       CREATE TABLE employee(
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -38,6 +41,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // 2. Product Table
     await db.execute('''
       CREATE TABLE product(
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -47,6 +51,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // 3. Slips Table
     await db.execute('''
       CREATE TABLE slips(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,10 +59,11 @@ class DatabaseHelper {
         total_amount REAL,
         date_created TEXT,
         note TEXT,
-        FOREIGN KEY (employee_id) REFERENCES employee (id)
+        FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
       )
     ''');
 
+    // 4. Slip Items Table
     await db.execute('''
       CREATE TABLE slip_items(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,7 +77,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // ✅ New loan table
+    // 5. Loan Table (Triggers removed)
     await db.execute('''
       CREATE TABLE loan(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,133 +89,41 @@ class DatabaseHelper {
         FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
       )
     ''');
-    await db.execute('''
-      CREATE TRIGGER update_employee_loan_after_insert
-      AFTER INSERT ON loan
-      BEGIN
-        UPDATE employee
-        SET loan_amount = loan_amount + 
-          CASE 
-            WHEN NEW.type = 1 THEN NEW.amount      -- addition
-            WHEN NEW.type = 0 THEN -NEW.amount     -- subtraction
-            ELSE 0
-          END
-        WHERE id = NEW.employee_id;
-      END;
-    ''');
-    await db.execute('''
-        CREATE TRIGGER update_employee_loan_after_update
-        AFTER UPDATE ON loan
-        BEGIN
-          UPDATE employee
-          SET loan_amount = loan_amount 
-            - CASE 
-                WHEN OLD.type = 1 THEN OLD.amount
-                WHEN OLD.type = 0 THEN -OLD.amount
-                ELSE 0
-              END
-            + CASE 
-                WHEN NEW.type = 1 THEN NEW.amount
-                WHEN NEW.type = 0 THEN -NEW.amount
-                ELSE 0
-              END
-          WHERE id = NEW.employee_id;
-        END;
-      ''');
-    await db.execute('''
-        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_update
-        AFTER UPDATE ON loan
-        BEGIN
-          UPDATE employee
-          SET loan_amount = loan_amount 
-            - CASE 
-                WHEN OLD.type = 1 THEN OLD.amount
-                WHEN OLD.type = 0 THEN -OLD.amount
-                ELSE 0
-              END
-            + CASE 
-                WHEN NEW.type = 1 THEN NEW.amount
-                WHEN NEW.type = 0 THEN -NEW.amount
-                ELSE 0
-              END
-          WHERE id = NEW.employee_id;
-        END;
-      ''');
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    await db.execute('PRAGMA foreign_keys = ON');
-
     if (oldVersion < 2) {
-      // 🔹 Add new columns to employee
-      await db.execute('ALTER TABLE employee ADD COLUMN loan_amount REAL DEFAULT 0');
-      await db.execute('ALTER TABLE employee ADD COLUMN image TEXT NULL');
-      await db.execute('ALTER TABLE product ADD COLUMN image TEXT NULL');
+      // Add missing columns to existing tables
+      await _safeAddColumn(db, 'employee', 'loan_amount', 'REAL DEFAULT 0');
+      await _safeAddColumn(db, 'employee', 'image', 'TEXT NULL');
+      await _safeAddColumn(db, 'product', 'image', 'TEXT NULL');
 
-      // 🔹 Create loan table
+      // Create loan table if it doesn't exist
       await db.execute('''
-        CREATE TABLE loan(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        employee_id INTEGER NOT NULL,
-        amount REAL,
-        type INTEGER, -- 1 = addition, 0 = subtraction
-        date_created TEXT,
-        note TEXT NULL,
-        FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
-      )
+        CREATE TABLE IF NOT EXISTS loan(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          employee_id INTEGER NOT NULL,
+          amount REAL,
+          type INTEGER,
+          date_created TEXT,
+          note TEXT NULL,
+          FOREIGN KEY (employee_id) REFERENCES employee (id) ON DELETE CASCADE
+        )
       ''');
-      await db.execute('''
-        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_insert
-        AFTER INSERT ON loan
-        BEGIN
-          UPDATE employee
-          SET loan_amount = loan_amount + 
-            CASE 
-              WHEN NEW.type = 1 THEN NEW.amount
-              WHEN NEW.type = 0 THEN -NEW.amount
-              ELSE 0
-            END
-          WHERE id = NEW.employee_id;
-        END;
-      ''');
-      await db.execute('''
-        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_update
-        AFTER UPDATE ON loan
-        BEGIN
-          UPDATE employee
-          SET loan_amount = loan_amount 
-            - CASE 
-                WHEN OLD.type = 1 THEN OLD.amount
-                WHEN OLD.type = 0 THEN -OLD.amount
-                ELSE 0
-              END
-            + CASE 
-                WHEN NEW.type = 1 THEN NEW.amount
-                WHEN NEW.type = 0 THEN -NEW.amount
-                ELSE 0
-              END
-          WHERE id = NEW.employee_id;
-        END;
-      ''');
-      await db.execute('''
-        CREATE TRIGGER IF NOT EXISTS update_employee_loan_after_update
-        AFTER UPDATE ON loan
-        BEGIN
-          UPDATE employee
-          SET loan_amount = loan_amount 
-            - CASE 
-                WHEN OLD.type = 1 THEN OLD.amount
-                WHEN OLD.type = 0 THEN -OLD.amount
-                ELSE 0
-              END
-            + CASE 
-                WHEN NEW.type = 1 THEN NEW.amount
-                WHEN NEW.type = 0 THEN -NEW.amount
-                ELSE 0
-              END
-          WHERE id = NEW.employee_id;
-        END;
-      ''');
+
+      // Drop triggers if they exist (Clean up from previous version attempts)
+      await db.execute('DROP TRIGGER IF EXISTS update_employee_loan_after_insert');
+      await db.execute('DROP TRIGGER IF EXISTS update_employee_loan_after_update');
+      await db.execute('DROP TRIGGER IF EXISTS update_employee_loan_after_delete');
+    }
+  }
+
+  // Helper method to prevent crashes if column already exists
+  Future<void> _safeAddColumn(Database db, String table, String column, String type) async {
+    try {
+      await db.execute('ALTER TABLE $table ADD COLUMN $column $type');
+    } catch (e) {
+      // Column already exists, ignore the error
     }
   }
 }

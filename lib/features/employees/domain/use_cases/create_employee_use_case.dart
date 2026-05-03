@@ -4,7 +4,7 @@ import 'package:calculations/features/employees/domain/repository/employee_repos
 class CreateEmployeeUseCase {
   final EmployeeRepository repository;
   CreateEmployeeUseCase(this.repository);
-  Future<Employee> execute(String name, String number, double loanAmount) {
-    return repository.createNewEmployee(name, number, loanAmount);
+  Future<Employee> execute({ required String name, required String number, required double loanAmount, required String? image}) {
+    return repository.createNewEmployee(name, number, loanAmount, image);
   }
 }

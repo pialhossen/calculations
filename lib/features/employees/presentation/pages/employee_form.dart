@@ -69,11 +69,13 @@ class _EmployeeFormState extends State<EmployeeForm> {
         Navigator.pop(context);
         context.read<EmployeeBloc>().add(
           EmployeeCreateEvent(
-            nameController.text,
-            phoneController.text,
-            double.tryParse(loanController.text) ?? 0.0,
+            name: nameController.text,
+            number: phoneController.text,
+            loanAmount: double.tryParse(loanController.text) ?? 0.0,
+            image: image,
           ),
         );
+        image = null;
       }
     }
 
@@ -82,12 +84,14 @@ class _EmployeeFormState extends State<EmployeeForm> {
         Navigator.pop(context);
         context.read<EmployeeBloc>().add(
           EmployeeUpdateEvent(
-            widget.id!,
-            nameController.text,
-            phoneController.text,
-            double.tryParse(loanController.text) ?? 0.0,
+            id: widget.id!,
+            name: nameController.text,
+            number: phoneController.text,
+            loanAmount: double.tryParse(loanController.text) ?? 0.0,
+            image: image,
           ),
         );
+        image = null;
       }
     }
 
@@ -143,7 +147,8 @@ class _EmployeeFormState extends State<EmployeeForm> {
                     onTap: () {
                       selectImage();
                     },
-                    child: image == null
+                    child:
+                        (image == null && state.selectedEmployee?.image == null)
                         ? DottedBorder(
                             color: Colors.grey,
                             strokeWidth: 2,
@@ -168,10 +173,17 @@ class _EmployeeFormState extends State<EmployeeForm> {
                           )
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: SizedBox(
+                            child: Container(
                               width: double.infinity,
                               height: 200,
-                              child: Image.file(image!, fit: BoxFit.cover),
+                              color:
+                                  Colors.grey[200], // Background to see the box
+                              child: image != null
+                                  ? Image.file(image!, fit: BoxFit.contain)
+                                  : Image.file(
+                                      File(state.selectedEmployee!.image!),
+                                      fit: BoxFit.contain,
+                                    ),
                             ),
                           ),
                   ),

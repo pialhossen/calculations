@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:calculations/features/employees/domain/entities/employee.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_bloc.dart';
 import 'package:calculations/features/employees/presentation/bloc/employee_event.dart';
@@ -8,10 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeeCard extends StatefulWidget {
   final Employee employee;
-  const EmployeeCard({
-    super.key,
-    required this.employee,
-  });
+  const EmployeeCard({super.key, required this.employee});
 
   @override
   State<EmployeeCard> createState() => _EmployeeCardState();
@@ -31,13 +30,13 @@ class _EmployeeCardState extends State<EmployeeCard> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(), 
-                child: const Text('Cancel')
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
                   context.read<EmployeeBloc>().add(
-                    EmployeeDeleteEvent(id: widget.employee.id!, q: null)
+                    EmployeeDeleteEvent(id: widget.employee.id!, q: null),
                   );
                   Navigator.of(context).pop();
                 },
@@ -79,9 +78,13 @@ class _EmployeeCardState extends State<EmployeeCard> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
-                          image: AssetImage(
-                            "assets/images/profile-picture.png",
-                          ),
+                          fit: BoxFit.cover,
+                          image: widget.employee.image != null
+                              ? FileImage(File(widget.employee.image!))
+                                    as ImageProvider
+                              : const AssetImage(
+                                  "assets/images/profile-picture.png",
+                                ),
                         ),
                       ),
                     ),
@@ -116,8 +119,14 @@ class _EmployeeCardState extends State<EmployeeCard> {
                       width: 40,
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoanList(employee: widget.employee,)));
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LoanList(employee: widget.employee),
+                            ),
+                          );
                         },
                         child: Icon(Icons.edit_document, size: 25),
                       ),
@@ -126,8 +135,14 @@ class _EmployeeCardState extends State<EmployeeCard> {
                       width: 40,
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeForm(id: widget.employee.id)));
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EmployeeForm(id: widget.employee.id),
+                            ),
+                          );
                         },
                         child: Icon(Icons.edit, size: 25),
                       ),

@@ -3,11 +3,13 @@ class Employee {
   final String name;
   final String number;
   final double loanAmount;
+  final String? image;
 
   Employee({
     this.id, 
     required this.name, 
     required this.number, 
-    required this.loanAmount
+    required this.loanAmount,
+    this.image
   });
 }

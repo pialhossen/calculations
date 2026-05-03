@@ -6,8 +6,8 @@ import 'package:calculations/features/employees/domain/repository/employee_repos
 class EmployeeRepositoryImpl implements EmployeeRepository {
   final EmployeeLocalDataSource employeeLocalDataSource = EmployeeLocalDataSourceImpl();
   @override
-  Future<EmployeeModel> createNewEmployee(String name, String number, double loanAmount) async {
-    final newEmployee = EmployeeModel(name: name, number: number, loanAmount: loanAmount);
+  Future<EmployeeModel> createNewEmployee(String name, String number, double loanAmount,String? image) async {
+    final newEmployee = EmployeeModel(name: name, number: number, loanAmount: loanAmount, image: image);
     final id = await employeeLocalDataSource.createEmployee(newEmployee);
     return newEmployee.copyWith(id: id);
   }
@@ -27,8 +27,8 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   }
   
   @override
-  Future<EmployeeModel> updateEmployee(int id, String name, String number, double loanAmount) async {
-    final updatedEmployee = EmployeeModel(id: id,name: name, number: number, loanAmount: loanAmount);
+  Future<EmployeeModel> updateEmployee(int id, String name, String number, double loanAmount, String? image) async {
+    final updatedEmployee = EmployeeModel(id: id,name: name, number: number, loanAmount: loanAmount, image: image);
     employeeLocalDataSource.updateEmployee(updatedEmployee);
     return updatedEmployee;
   }
