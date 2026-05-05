@@ -204,7 +204,6 @@ class _LoanListState extends State<LoanList> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  print('This Is Fired');
                   amountController.text = state.loans[index].amount.toInt().toString();
                   noteController.text = state.loans[index].note!;
                   return DialogBox(

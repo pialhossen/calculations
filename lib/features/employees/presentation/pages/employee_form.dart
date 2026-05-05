@@ -109,8 +109,8 @@ class _EmployeeFormState extends State<EmployeeForm> {
           offset: Offset(-10, 0),
           child: Text(
             widget.id == null
-                ? "Add New Employee"
-                : "Edit Employee", // use the passed title
+                ? "Add New People"
+                : "Edit People", // use the passed title
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -194,13 +194,13 @@ class _EmployeeFormState extends State<EmployeeForm> {
                     SizedBox(height: 20),
                     Input(
                       label: 'NAME',
-                      placeholder: 'Enter Employee Name',
+                      placeholder: 'Enter People Name',
                       controller: nameController,
                     ),
                     SizedBox(height: 20),
                     Input(
                       label: 'PHONE NUMBER',
-                      placeholder: 'Enter Employee Phone',
+                      placeholder: 'Enter People Phone',
                       controller: phoneController,
                     ),
                     SizedBox(height: 20),

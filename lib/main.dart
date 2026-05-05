@@ -15,7 +15,6 @@ import 'package:calculations/features/loans/domain/use_cases/get_all_loan_of_emp
 import 'package:calculations/features/loans/domain/use_cases/get_single_loan_use_case.dart';
 import 'package:calculations/features/loans/domain/use_cases/update_loan_use_case.dart';
 import 'package:calculations/features/loans/presentation/bloc/loan_bloc.dart';
-import 'package:calculations/features/loans/presentation/bloc/loan_event.dart';
 import 'package:calculations/features/products/domain/repository/product_repository_impl.dart';
 import 'package:calculations/features/products/domain/use_cases/create_product_use_case.dart';
 import 'package:calculations/features/products/domain/use_cases/delete_product_use_case.dart';
@@ -71,6 +70,13 @@ void main() {
   final getSingleLoanUseCase = GetSingleLoanUseCase(loanRepository);
   final getAllLoanOfEmployeeUseCase = GetAllLoanOfEmployeeUseCase(loanRepository);
   final deleteLoanUseCase = DeleteLoanUseCase(loanRepository);
+  final loanBloc = LoanBloc(
+    createLoanUseCase: createLoanUseCase,
+    deleteLoanUseCase: deleteLoanUseCase,
+    getAllLoanOfEmployeeUseCase: getAllLoanOfEmployeeUseCase,
+    getSingleLoanUseCase: getSingleLoanUseCase,
+    updateLoanUseCase: updateLoanUseCase,
+  );
 
   runApp(
     MultiBlocProvider(
@@ -81,7 +87,8 @@ void main() {
             updateEmployeeUseCase: updateEmployeeUseCase,
             getAllUseCase: getAllUseCase,
             deleteEmployeeUseCase: deleteEmployeeUseCase,
-            getSingleEmployeeModelUseCase: getSingleEmployeeModelUseCase
+            getSingleEmployeeModelUseCase: getSingleEmployeeModelUseCase,
+            loanBloc: loanBloc,
           )..add(LoadEmployeesEvent(q: null)),
         ),
         BlocProvider(

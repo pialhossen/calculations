@@ -24,7 +24,7 @@ class _LayoutState extends State<Layout> {
   ];
   List<String> pageTitles = [
     "Calculations",
-    "Employees",
+    "Peoples",
     "Products",
     "Settings",
   ];
@@ -67,7 +67,7 @@ class _LayoutState extends State<Layout> {
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.userGroup),
-            label: "Employees",
+            label: "Peoples",
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.box),

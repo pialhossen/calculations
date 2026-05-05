@@ -72,7 +72,7 @@ class _EmployeesState extends State<Employees> {
                           context.read<EmployeeBloc>().add(LoadEmployeesEvent(q: value));
                         },
                         decoration: const InputDecoration(
-                          hintText: "Search Employee",
+                          hintText: "Search People",
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -121,7 +121,7 @@ class _EmployeesState extends State<Employees> {
     if (state.employees.isEmpty) {
       return const Center(
         child: Text(
-          "No Employee Found",
+          "No Peoples Found",
           style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
       );
