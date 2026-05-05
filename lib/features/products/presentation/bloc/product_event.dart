@@ -1,16 +1,29 @@
+import 'dart:io';
+
 abstract class ProductEvent {}
 
 class ProductCreateEvent extends ProductEvent{
   final String name;
   final int perkg;
-  ProductCreateEvent(this.name, this.perkg);
+  final File? image;
+  ProductCreateEvent({
+    required this.name, 
+    required this.perkg,
+    this.image
+  });
 }
 
 class ProductUpdateEvent extends ProductEvent{
   final int id;
   final String name;
   final int perkg;
-  ProductUpdateEvent(this.id, this.name, this.perkg);
+  final File? image;
+  ProductUpdateEvent({ 
+    required this.id, 
+    required this.name, 
+    required this.perkg,
+    required this.image
+  });
 }
 
 class SingleProductEvent extends ProductEvent{

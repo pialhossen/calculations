@@ -6,8 +6,8 @@ import 'package:calculations/features/products/domain/repository/product_reposit
 class ProductRepositoryImpl implements ProductRepository {
   final ProductLocalDataSource productLocalDataSource = ProductLocalDataSourceImpl();
   @override
-  Future<ProductModel> createNewProduct(String name, int perkg) async {
-    final newProducts = ProductModel(name: name, perkg: perkg);
+  Future<ProductModel> createNewProduct({required String name, required int perkg, required String? image}) async {
+    final newProducts = ProductModel(name: name, perkg: perkg, image: image);
     final id = await productLocalDataSource.createProduct(newProducts);
     return newProducts.copyWith(id: id);
   }
@@ -28,8 +28,8 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<ProductModel> updateProduct(int id, String name, int perkg) async {
-    final updatedProduct = ProductModel(id: id,name: name, perkg: perkg);
+  Future<ProductModel> updateProduct({required int id, required String name, required int perkg, required String? image}) async {
+    final updatedProduct = ProductModel(id: id,name: name, perkg: perkg, image: image);
     productLocalDataSource.updateProduct(updatedProduct);
     return updatedProduct;
   }

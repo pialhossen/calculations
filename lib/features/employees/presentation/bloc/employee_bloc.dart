@@ -33,11 +33,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
         final Directory appDocDir = await getApplicationDocumentsDirectory();
         final String path = appDocDir.path;
 
-        // 3. Create a unique name for the image
-        final String fileName = p.basename(event.image!.path);
+        final String fileName = "${DateTime.now().millisecondsSinceEpoch}_${p.basename(event.image!.path)}";
         final String localPath = '$path/$fileName';
 
-        // 4. Copy the file to the local directory
         final File localImage = await File(event.image!.path).copy(localPath);
 
         imagePath = localImage.path;
@@ -60,13 +58,10 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     on<EmployeeUpdateEvent>((event, emit) async {
       emit(state.copyWith(isLoading: true));
 
-      // 1. Get the current employee from state to check for an existing image
       final oldEmployee = state.employees.firstWhere((e) => e.id == event.id);
-      String? imagePath = oldEmployee.image; // Default to existing path
+      String? imagePath = oldEmployee.image;
 
-      // 2. Check if a NEW image was provided in the event
       if (event.image != null) {
-        // A. Delete the old physical file if it exists to save space
         if (oldEmployee.image != null) {
           final oldFile = File(oldEmployee.image!);
           if (await oldFile.exists()) {
@@ -74,7 +69,6 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
           }
         }
 
-        // B. Save the new image to the local app directory (just like Create)
         final Directory appDocDir = await getApplicationDocumentsDirectory();
         final String path = appDocDir.path;
         final String fileName =
@@ -85,16 +79,14 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
         imagePath = localImage.path;
       }
 
-      // 3. Execute the update UseCase with the new (or old) imagePath
       final updatedEmployee = await updateEmployeeUseCase.execute(
         id: event.id,
         name: event.name,
         number: event.number,
         loanAmount: event.loanAmount,
-        image: imagePath, // Pass the managed path here
+        image: imagePath,
       );
 
-      // 4. Update the list in the state
       final updateEmployeeList = state.employees.map((employee) {
         return employee.id == event.id ? updatedEmployee : employee;
       }).toList();

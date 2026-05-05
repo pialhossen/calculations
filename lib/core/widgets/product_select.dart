@@ -35,7 +35,7 @@ class _ProductSelectState extends State<ProductSelect> {
     if (widget.products.isEmpty) return const Text("...");
 
     return Container(
-      width: 60,
+      width: 70,
       height: 30,
       child: DropdownButton<String>(
         value: _internalValue, // 2. Use the INTERNAL state variable

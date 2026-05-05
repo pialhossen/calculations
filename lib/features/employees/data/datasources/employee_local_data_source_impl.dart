@@ -14,6 +14,17 @@ class EmployeeLocalDataSourceImpl implements EmployeeLocalDataSource {
     );
   }
 
+   @override
+  Future<bool> deleteEmployee(int id) async {
+    final db = await DatabaseHelper.instance.database;
+    final result = await db.delete(
+      'employee',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return result > 0;
+  }
+
   @override
   Future<int> updateEmployee(EmployeeModel employee) async {
     if (employee.id == null) {
@@ -35,8 +46,6 @@ class EmployeeLocalDataSourceImpl implements EmployeeLocalDataSource {
     List<Map<String, dynamic>> maps;
 
     if (q != null && q.trim().isNotEmpty) {
-      // We use the LIKE operator for partial matches
-      // %q% means it will find the text anywhere in the name or number
       maps = await db.query(
         'employee',
         where: 'name LIKE ? OR number LIKE ?',
@@ -44,22 +53,10 @@ class EmployeeLocalDataSourceImpl implements EmployeeLocalDataSource {
         orderBy: 'id DESC',
       );
     } else {
-      // If q is null or empty, fetch all
       maps = await db.query('employee', orderBy: 'id DESC');
     }
 
     return maps.map((map) => EmployeeModel.fromMap(map)).toList();
-  }
-
-  @override
-  Future<bool> deleteEmployee(int id) async {
-    final db = await DatabaseHelper.instance.database;
-    final result = await db.delete(
-      'employee',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return result > 0;
   }
 
   @override

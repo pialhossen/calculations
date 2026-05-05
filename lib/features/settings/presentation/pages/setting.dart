@@ -1,10 +1,12 @@
 import 'package:calculations/core/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Setting extends StatelessWidget {
   static MaterialPageRoute route() =>
@@ -13,69 +15,57 @@ class Setting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> exportDatabase() async {
-      final db = await DatabaseHelper.instance.database;
+    Future<void> exportRawDatabaseFile() async {
+      // Get the path to the actual SQLite file
+      final dbPath = join(await getDatabasesPath(), 'database.db');
+      final dbFile = File(dbPath);
 
-      // 1. Fetch data from all tables
-      List<Map<String, dynamic>> slips = await db.query('slips');
-      List<Map<String, dynamic>> slipItems = await db.query('slip_items');
-      List<Map<String, dynamic>> employees = await db.query('employee');
-      List<Map<String, dynamic>> products = await db.query('product');
-
-      // 2. Wrap into a single Map
-      Map<String, dynamic> backup = {
-        'slips': slips,
-        'slip_items': slipItems,
-        'employees': employees,
-        'products': products,
-        'exported_at': DateTime.now().toIso8601String(),
-      };
-
-      // 3. Convert to String and Save
-      String jsonString = jsonEncode(backup);
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File(
-        '${directory.path}/backup_${DateTime.now().millisecondsSinceEpoch}.json',
-      );
-
-      await file.writeAsString(jsonString);
-
-      // 4. Share the file (Opens the phone's share sheet so you can save to Drive/WhatsApp/Email)
-      await Share.shareXFiles([XFile(file.path)], text: 'My Database Backup');
+      if (await dbFile.exists()) {
+        // Share the actual binary file
+        await Share.shareXFiles([
+          XFile(dbPath),
+        ], text: 'SQLite Database Backup');
+      }
     }
 
-    Future<void> importDatabase() async {
-      // Use this syntax:
-      FilePickerResult? result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-      );
+    Future<void> importRawDatabaseFile() async {
+      FilePickerResult? result = await FilePicker.pickFiles();
 
-      if (result != null) {
-        File file = File(result.files.single.path!);
-        String content = await file.readAsString();
-        Map<String, dynamic> backup = jsonDecode(content);
+      if (result != null && result.files.single.path != null) {
+        final newDbFile = File(result.files.single.path!);
+        final dbPath = join(await getDatabasesPath(), 'database.db');
 
+        // 1. Close current connection
         final db = await DatabaseHelper.instance.database;
+        await db.close();
 
-        // Use a transaction for safety
-        await db.transaction((txn) async {
-          // 1. Clear existing data
-          await txn.delete('slips');
-          await txn.delete('slip_items');
-          await txn.delete('employee');
-          await txn.delete('product');
+        // 2. Overwrite the file
+        await newDbFile.copy(dbPath);
 
-          // 2. Re-insert data
-          for (var row in backup['employees'])
-            await txn.insert('employee', row);
-          for (var row in backup['products']) await txn.insert('product', row);
-          for (var row in backup['slips']) await txn.insert('slips', row);
-          for (var row in backup['slip_items'])
-            await txn.insert('slip_items', row);
-        });
-
-        print("Import successful!");
+        // 3. Show the Mandatory Restart Dialog
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false, // User MUST click the button
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Import Successful"),
+                content: const Text(
+                  "The database has been restored. The app must restart to load the new data correctly.",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      // This terminates the app process
+                      exit(0);
+                    },
+                    child: const Text("CLOSE APP"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
     }
 
@@ -128,7 +118,7 @@ class Setting extends StatelessWidget {
                     color: Color.fromARGB(255, 212, 212, 212),
                   ),
                   child: GestureDetector(
-                    onTap: exportDatabase,
+                    onTap: exportRawDatabaseFile,
                     child: Row(
                       children: [
                         Text(
@@ -187,7 +177,7 @@ class Setting extends StatelessWidget {
                     color: Color.fromARGB(255, 212, 212, 212),
                   ),
                   child: GestureDetector(
-                    onTap: importDatabase,
+                    onTap: importRawDatabaseFile,
                     child: Row(
                       children: [
                         Text(

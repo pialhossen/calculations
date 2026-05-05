@@ -32,7 +32,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
   File? image;
 
   void selectImage() async {
-    final pickedImage = await pickImage();
+    final pickedImage = await pickImageWithOption(context);
     if (pickedImage != null) {
       setState(() {
         image = pickedImage;
@@ -137,97 +137,104 @@ class _EmployeeFormState extends State<EmployeeForm> {
           if (state.isLoading) {
             return Center(child: const CircularProgressIndicator());
           }
-          return Container(
-            padding: EdgeInsets.all(15),
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      selectImage();
-                    },
-                    child:
-                        (image == null && state.selectedEmployee?.image == null)
-                        ? DottedBorder(
-                            color: Colors.grey,
-                            strokeWidth: 2,
-                            dashPattern: const [10, 2],
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(10),
-                            child: SizedBox(
-                              height: 150,
-                              width: double.infinity,
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.folder_open, size: 40),
-                                  SizedBox(height: 15),
-                                  Text(
-                                    'Select your image',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ],
+          bool hasNewImage = image != null && image!.existsSync();
+          bool hasSavedImage =
+              state.selectedEmployee?.image != null &&
+              File(state.selectedEmployee!.image!).existsSync();
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        selectImage();
+                      },
+                      child: (!hasNewImage && !hasSavedImage)
+                          ? DottedBorder(
+                              color: Colors.grey,
+                              strokeWidth: 2,
+                              dashPattern: const [10, 2],
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(10),
+                              child: SizedBox(
+                                height: 150,
+                                width: double.infinity,
+                                child: const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.folder_open, size: 40),
+                                    SizedBox(height: 15),
+                                    Text(
+                                      'Select your image',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: double.infinity,
+                                height: 200,
+                                color: Colors
+                                    .grey[200], // Background to see the box
+                                child: image != null
+                                    ? Image.file(image!, fit: BoxFit.contain)
+                                    : Image.file(
+                                        File(state.selectedEmployee!.image!),
+                                        fit: BoxFit.contain,
+                                      ),
                               ),
                             ),
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: double.infinity,
-                              height: 200,
-                              color:
-                                  Colors.grey[200], // Background to see the box
-                              child: image != null
-                                  ? Image.file(image!, fit: BoxFit.contain)
-                                  : Image.file(
-                                      File(state.selectedEmployee!.image!),
-                                      fit: BoxFit.contain,
-                                    ),
-                            ),
-                          ),
-                  ),
-                  SizedBox(height: 20),
-                  Input(
-                    label: 'NAME',
-                    placeholder: 'Enter Employee Name',
-                    controller: nameController,
-                  ),
-                  SizedBox(height: 20),
-                  Input(
-                    label: 'PHONE NUMBER',
-                    placeholder: 'Enter Employee Phone',
-                    controller: phoneController,
-                  ),
-                  SizedBox(height: 20),
-                  Input(
-                    label: 'Loan',
-                    placeholder: 'Enter Loan Amount',
-                    controller: loanController,
-                  ),
-                  GestureDetector(
-                    onTap: widget.id == null ? createEmployee : updateEmployee,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      margin: EdgeInsets.only(top: 30),
-                      alignment: Alignment.center,
+                    ),
+                    SizedBox(height: 20),
+                    Input(
+                      label: 'NAME',
+                      placeholder: 'Enter Employee Name',
+                      controller: nameController,
+                    ),
+                    SizedBox(height: 20),
+                    Input(
+                      label: 'PHONE NUMBER',
+                      placeholder: 'Enter Employee Phone',
+                      controller: phoneController,
+                    ),
+                    SizedBox(height: 20),
+                    Input(
+                      label: 'Loan',
+                      placeholder: 'Enter Loan Amount',
+                      controller: loanController,
+                    ),
+                    GestureDetector(
+                      onTap: widget.id == null
+                          ? createEmployee
+                          : updateEmployee,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        margin: EdgeInsets.only(top: 30),
+                        alignment: Alignment.center,
 
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        widget.id == null ? "ADD" : "UPDATE",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 14,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          widget.id == null ? "ADD" : "UPDATE",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

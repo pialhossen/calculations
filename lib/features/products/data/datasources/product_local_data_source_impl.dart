@@ -22,6 +22,20 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   }
 
   @override
+  Future<int> updateProduct(ProductModel product) async {
+    if (product.id == null) {
+      throw Exception("Cannot update an product without an ID.");
+    }
+    final db = await DatabaseHelper.instance.database;
+    return await db.update(
+      'product',
+      product.toMap(),
+      where: 'id = ?',
+      whereArgs: [product.id],
+    );
+  }
+
+  @override
   Future<ProductModel> getProduct(int id) async {
     final db = await DatabaseHelper.instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -44,7 +58,6 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     List<Map<String, dynamic>> maps;
 
     if (q != null && q.trim().isNotEmpty) {
-      // Searches for products where the name contains the string Q
       maps = await db.query(
         'product',
         where: 'name LIKE ?',
@@ -52,24 +65,9 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         orderBy: 'id DESC',
       );
     } else {
-      // Returns all products if no query is provided
       maps = await db.query('product', orderBy: 'id DESC');
     }
 
     return maps.map((map) => ProductModel.fromMap(map)).toList();
-  }
-
-  @override
-  Future<int> updateProduct(ProductModel product) async {
-    if (product.id == null) {
-      throw Exception("Cannot update an product without an ID.");
-    }
-    final db = await DatabaseHelper.instance.database;
-    return await db.update(
-      'product',
-      product.toMap(),
-      where: 'id = ?',
-      whereArgs: [product.id],
-    );
   }
 }

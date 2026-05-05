@@ -111,69 +111,67 @@ class _SlipFormState extends State<SlipForm> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: BlocListener<EmployeeBloc, EmployeeState>(
+      body: BlocListener<EmployeeBloc, EmployeeState>(
+        listener: (context, state) {
+          if (state.employees.isNotEmpty) {
+            setState(() {
+              employees = state.employees;
+      
+              // If we are CREATING (id == null) and haven't picked anyone yet
+              if (widget.id == null && selectedEmployee == null) {
+                selectedEmployee = state.employees.first;
+              }
+              // If we are UPDATING, we usually wait for SlipBloc to provide the employee
+            });
+          }
+        },
+        child: BlocListener<ProductBloc, ProductState>(
           listener: (context, state) {
-            if (state.employees.isNotEmpty) {
+            if (state.products.isNotEmpty) {
               setState(() {
-                employees = state.employees;
-
-                // If we are CREATING (id == null) and haven't picked anyone yet
-                if (widget.id == null && selectedEmployee == null) {
-                  selectedEmployee = state.employees.first;
-                }
-                // If we are UPDATING, we usually wait for SlipBloc to provide the employee
+                products = state.products;
               });
             }
           },
-          child: BlocListener<ProductBloc, ProductState>(
+          child: BlocConsumer<SlipBloc, SlipState>(
+            listenWhen: (previous, current) =>
+                previous.selectedSlip != current.selectedSlip,
+            // Inside BlocConsumer<SlipBloc, SlipState> listener
             listener: (context, state) {
-              if (state.products.isNotEmpty) {
+              if (state.selectedSlip != null && steps.isEmpty) {
                 setState(() {
-                  products = state.products;
+                  steps = state.selectedSlip!.slipItems;
+                  noteController.text = state.selectedSlip?.note ?? '';
+                  selectedEmployee = state.selectedSlip!.employee;
                 });
               }
             },
-            child: BlocConsumer<SlipBloc, SlipState>(
-              listenWhen: (previous, current) =>
-                  previous.selectedSlip != current.selectedSlip,
-              // Inside BlocConsumer<SlipBloc, SlipState> listener
-              listener: (context, state) {
-                if (state.selectedSlip != null && steps.isEmpty) {
-                  setState(() {
-                    steps = state.selectedSlip!.slipItems;
-                    noteController.text = state.selectedSlip?.note ?? '';
-                    selectedEmployee = state.selectedSlip!.employee;
-                  });
-                }
-              },
-              builder: (context, state) {
-                if (state.isLoading) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                if (employees == null || products == null) {
-                  return const Expanded(
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Column(
-                          mainAxisSize:
-                              MainAxisSize.min, // Hugs the content tightly
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 16),
-                            Text(
-                              "Loading data...",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
+            builder: (context, state) {
+              if (state.isLoading) {
+                return Expanded(child: Center(child: const CircularProgressIndicator()));
+              }
+              if (employees == null || products == null) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize:
+                          MainAxisSize.min, // Hugs the content tightly
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text(
+                          "Loading data...",
+                          style: TextStyle(color: Colors.grey),
                         ),
-                      ),
+                      ],
                     ),
-                  );
-                }
-                return Column(
+                  ),
+                );
+              }
+              return SingleChildScrollView(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
@@ -211,7 +209,7 @@ class _SlipFormState extends State<SlipForm> {
                                   ],
                                 ),
                               ),
-
+                      
                               EmployeeSelect(
                                 employees: employees!,
                                 onChange: handleEmployeeChange,
@@ -397,9 +395,9 @@ class _SlipFormState extends State<SlipForm> {
                       ),
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

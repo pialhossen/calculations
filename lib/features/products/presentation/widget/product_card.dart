@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:calculations/features/products/domain/entities/product.dart';
 import 'package:calculations/features/products/presentation/bloc/product_bloc.dart';
 import 'package:calculations/features/products/presentation/bloc/product_event.dart';
@@ -5,13 +7,15 @@ import 'package:calculations/features/products/presentation/pages/product_form.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Productcard extends StatelessWidget {
+class Productcard extends StatefulWidget {
   final Product product;
-  const Productcard({
-    super.key,
-    required this.product,
-  });
+  const Productcard({super.key, required this.product});
 
+  @override
+  State<Productcard> createState() => _ProductcardState();
+}
+
+class _ProductcardState extends State<Productcard> {
   @override
   Widget build(BuildContext context) {
     void deleteProduct() {
@@ -25,13 +29,13 @@ class Productcard extends StatelessWidget {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(), 
-                child: const Text('Cancel')
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
                   context.read<ProductBloc>().add(
-                    ProductDeleteEvent(product.id!)
+                    ProductDeleteEvent(widget.product.id!),
                   );
                   Navigator.of(context).pop();
                 },
@@ -45,6 +49,7 @@ class Productcard extends StatelessWidget {
         },
       );
     }
+
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.only(top: 5, bottom: 5, right: 15, left: 10),
@@ -55,7 +60,8 @@ class Productcard extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch, // make children full height
+        crossAxisAlignment:
+            CrossAxisAlignment.stretch, // make children full height
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +76,16 @@ class Productcard extends StatelessWidget {
                       width: 70,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(image: AssetImage("assets/images/products.png"))
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image:
+                              (widget.product.image != null && File(widget.product.image!).existsSync())
+                              ? FileImage(File(widget.product.image!))
+                                    as ImageProvider
+                              : const AssetImage(
+                                  "assets/images/profile-picture.png",
+                                ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 8),
@@ -79,18 +94,18 @@ class Productcard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          product.name,
+                          widget.product.name,
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.w900
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
-                        Text("${product.perkg.toString()} Tk KG")
+                        Text("${widget.product.perkg.toString()} Tk KG"),
                       ],
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           Column(
@@ -105,12 +120,15 @@ class Productcard extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductForm(id: product.id)));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductForm(id: widget.product.id),
+                            ),
+                          );
                         },
-                        child: Icon(
-                          Icons.edit,
-                          size: 25,
-                        ),
+                        child: Icon(Icons.edit, size: 25),
                       ),
                     ),
                     Container(
@@ -118,11 +136,7 @@ class Productcard extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: deleteProduct,
-                        child: Icon(
-                          Icons.delete,
-                          size: 25,
-                          color: Colors.red,
-                        ),
+                        child: Icon(Icons.delete, size: 25, color: Colors.red),
                       ),
                     ),
                   ],

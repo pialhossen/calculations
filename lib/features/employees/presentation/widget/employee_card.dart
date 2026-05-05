@@ -10,7 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeeCard extends StatefulWidget {
   final Employee employee;
-  const EmployeeCard({super.key, required this.employee});
+  const EmployeeCard({
+    super.key, 
+    required this.employee
+  });
 
   @override
   State<EmployeeCard> createState() => _EmployeeCardState();
@@ -79,7 +82,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: widget.employee.image != null
+                          image: widget.employee.image != null && File(widget.employee.image!).existsSync()
                               ? FileImage(File(widget.employee.image!))
                                     as ImageProvider
                               : const AssetImage(
